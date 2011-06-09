@@ -18,11 +18,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -45,6 +47,7 @@ public class Addons extends PreferenceActivity {
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
 	private static final String STOCK_KB = "stock_keyboard";
+	private static final String SBC1 = "sbc_1";
 
         private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
         public static final String BACKUP_DIR = "/sdcard/clockworkmod/backup";
@@ -64,6 +67,7 @@ public class Addons extends PreferenceActivity {
 
 	private Preference mGoogleApps;
 	private Preference mStockKB;
+	private Preference mSBC1;
 
 	private boolean mAddonIsFlashable;
 
@@ -77,6 +81,11 @@ public class Addons extends PreferenceActivity {
 
 	        mGoogleApps = prefSet.findPreference(GOOGLE_APPS);
 		mStockKB = prefSet.findPreference(STOCK_KB);
+		mSBC1 = prefSet.findPreference(SBC1);
+	        if ((!Build.MODEL.equals("Incredible"))) {
+			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
+		        kernelCategory.removePreference(mSBC1);
+		}
 
 		updateApp();
 	}
@@ -91,7 +100,11 @@ public class Addons extends PreferenceActivity {
 				OUTPUT_NAME = "LatinIME.apk";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/LatinIME.apk";
 				mAddonIsFlashable = false;
-			}
+			} else if (preference == mSBC1) {
+                                OUTPUT_NAME = "OMFGBk-sbc_1.zip";
+                                DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGBk-sbc-1.zip";
+                                mAddonIsFlashable = true;
+                        }
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			if (f.exists()) {

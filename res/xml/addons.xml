@@ -21,4 +21,16 @@
         </com.t3hh4xx0r.addons.IconPreferenceScreen> 
 	</PreferenceCategory>
 
+        <PreferenceCategory 
+	android:title="@string/kernel_addons"
+	android:key="kernel_category"
+	>
+			
+        <com.t3hh4xx0r.addons.IconPreferenceScreen
+                        android:key="sbc_1" 
+                        android:title="@string/sbc_1"
+                        android:summary="@string/sbc_1_summary" >
+        </com.t3hh4xx0r.addons.IconPreferenceScreen>
+        </PreferenceCategory>
+
 </PreferenceScreen>
