@@ -39,11 +39,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.util.Log;
 import android.util.Slog;
 
 public class Addons extends PreferenceActivity {
 	public static String DATE = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(new Date());
 
+
+	private String TAG = "Addons";
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
 	private static final String STOCK_KB = "stock_keyboard";
@@ -87,11 +90,28 @@ public class Addons extends PreferenceActivity {
 		        kernelCategory.removePreference(mSBC1);
 		}
 
-		updateApp();
+		if(this.isSdCardPresent() && this.isSdCardWriteable())updateApp();
+		else log("Cannot update app. Sdcard is not writeable or present.");
 	}
+	
+	private boolean isSdCardPresent(){
+		
+		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+		
+	}
+	
+	private boolean isSdCardWriteable(){
+		
+		return !Environment.MEDIA_MOUNTED_READ_ONLY.equals(Environment.getExternalStorageState());
+		
+	}
+
 
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
      		boolean value;
+     		
+     		if(this.isSdCardPresent() && this.isSdCardWriteable()){
+     		
 		        if (preference == mGoogleApps) {
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/GAPPS.zip";
 				OUTPUT_NAME = "Gapps.zip";
@@ -116,7 +136,12 @@ public class Addons extends PreferenceActivity {
                 	} else {
                         	new DownloadFileAsync().execute(DOWNLOAD_URL);
                 	}
-	
+     		}
+     		
+     		else{
+     			else log("Cannot update app. Sdcard is not writeable or present.");
+     				
+     		}	
 			return true;
 
 	}
@@ -318,4 +343,12 @@ public class Addons extends PreferenceActivity {
             e.printStackTrace();
             }
 	}
+	private void log(String msg) {
+
+	
+
+	    Log.d(TAG, msg);
+	
+
+  }
 }

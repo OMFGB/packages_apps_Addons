@@ -19,4 +19,6 @@
     <string name="nightlys_summary">OMFGB nightlys, remember NO SUPPORT PROVIDED</string>
     <string name="nightlys_title">OMFGB Nightlys</string>
 
+<string name="no_sdcard">Cannot update app. Sdcard is not writeable or present.</string>
+
 </resources>
