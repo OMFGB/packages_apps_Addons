@@ -44,7 +44,7 @@ public class Addons extends PreferenceActivity {
 
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
-	//private static final String STOCK_KB = "stock_keyboard";
+	private static final String STOCK_KB = "stock_keyboard";
 
         private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
         public static final String BACKUP_DIR = "/sdcard/clockworkmod/backup";
@@ -56,12 +56,16 @@ public class Addons extends PreferenceActivity {
 	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
 
 	private int DOWNLOAD_PROGRESS = 0;
-	private static final int PREPARE_ADDON = 0;
-	private static final int PREPARE_COMPLETE = 1;
+	private static final int FLASH_ADDON = 0;
+	private static final int FLASH_COMPLETE = 1;
+	private static final int INSTALL_ADDON = 2;
+
 	private ProgressDialog pbarDialog;
 
 	private Preference mGoogleApps;
-	//private Preference mStockKB;
+	private Preference mStockKB;
+
+	private boolean mAddonIsFlashable;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,7 @@ public class Addons extends PreferenceActivity {
                 PreferenceScreen prefSet = getPreferenceScreen();
 
 	        mGoogleApps = prefSet.findPreference(GOOGLE_APPS);
-		//mStockKB = prefSet.findPreference(STOCK_KB);
+		mStockKB = prefSet.findPreference(STOCK_KB);
 
 		updateApp();
 	}
@@ -82,14 +86,20 @@ public class Addons extends PreferenceActivity {
 		        if (preference == mGoogleApps) {
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/GAPPS.zip";
 				OUTPUT_NAME = "Gapps.zip";
-       			//} else if (preference == mStockKB) {
-			//	OUTPUT_NAME = "Stock_keyboard.zip";
-			//	//No download url yet.
+				mAddonIsFlashable = true;
+       			} else if (preference == mStockKB) {
+				OUTPUT_NAME = "LatinIME.apk";
+                                DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/LatinIME.apk";
+				mAddonIsFlashable = false;
 			}
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			if (f.exists()) {
-                	        handler.sendEmptyMessage(PREPARE_ADDON);
+				if (mAddonIsFlashable) {
+                	        	handler.sendEmptyMessage(FLASH_ADDON);
+				} else {
+					handler.sendEmptyMessage(INSTALL_ADDON);
+				}
                 	} else {
                         	new DownloadFileAsync().execute(DOWNLOAD_URL);
                 	}
@@ -115,22 +125,61 @@ public class Addons extends PreferenceActivity {
 		@Override
 		public void handleMessage(Message msg) {
 			switch(msg.what){
-			case PREPARE_ADDON:
-				preparePackage();
+			case FLASH_ADDON:
+				flashPackage();
 				break;
-			case PREPARE_COMPLETE:
+			case FLASH_COMPLETE:
 				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 				pbarDialog.dismiss();
+				break;
+			case INSTALL_ADDON:
+				installPackage();
 				break;
 			}
 			return;
 		}
 	};
 
-	public void preparePackage() {
+	public void installPackage() {
+
+                pbarDialog = new ProgressDialog(Addons.this);
+                pbarDialog.setMessage("Please Wait\n\nInstalling Addon...");
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+                pbarDialog.show();
+
+                Thread cmdThread = new Thread(){
+                        @Override
+                        public void run() {
+                                Looper.prepare();
+
+                                try{Thread.sleep(1000);}catch(InterruptedException e){ }
+
+                                final Runtime run = Runtime.getRuntime();
+                                DataOutputStream out = null;
+                                Process p = null;
+
+                                try {
+                                        p = run.exec("su");
+                                        out = new DataOutputStream(p.getOutputStream());
+					out.writeBytes("busybox mount -o rw,remount /system\n");
+                                        out.writeBytes("busybox cp " + DOWNLOAD_DIR + OUTPUT_NAME + " /system/app/\n");
+                                        out.writeBytes("busybox mount -o ro,remount /system\n");
+                                        out.flush();
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                        return;
+                                }
+
+                                handler.sendEmptyMessage(FLASH_COMPLETE);
+                        }
+                };
+                cmdThread.start();
+        }
+
+	public void flashPackage() {
 
 		pbarDialog = new ProgressDialog(Addons.this);
-		pbarDialog.setMessage("Please Wait\n\nPreparing Addon...");
+		pbarDialog.setMessage("Please Wait\n\nPreparing Addon for flashing...");
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		pbarDialog.show();
 
@@ -161,7 +210,7 @@ public class Addons extends PreferenceActivity {
 					return;
 				}
 
-				handler.sendEmptyMessage(PREPARE_COMPLETE);		
+				handler.sendEmptyMessage(FLASH_COMPLETE);		
 			}
 		};
 		cmdThread.start();
@@ -223,7 +272,11 @@ public class Addons extends PreferenceActivity {
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
                         if (f.exists()) {
-				handler.sendEmptyMessage(PREPARE_ADDON);
+                                if (mAddonIsFlashable) {
+                                        handler.sendEmptyMessage(FLASH_ADDON);
+                                } else {
+                                        handler.sendEmptyMessage(INSTALL_ADDON);
+                                }
 			} else {
 				finish();
 			}

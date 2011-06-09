@@ -14,12 +14,11 @@
 
 	<PreferenceCategory android:title="@string/apps_addons">
 
-	<!--
         <com.t3hh4xx0r.addons.IconPreferenceScreen
                	        android:key="stock_keyboard" 
                        	android:title="@string/stock_kb"
                         android:summary="@string/stock_kb_summary" >
-        </com.t3hh4xx0r.addons.IconPreferenceScreen> -->
+        </com.t3hh4xx0r.addons.IconPreferenceScreen> 
 	</PreferenceCategory>
 
 </PreferenceScreen>
