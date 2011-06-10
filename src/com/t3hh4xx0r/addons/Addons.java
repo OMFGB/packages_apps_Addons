@@ -139,7 +139,7 @@ public class Addons extends PreferenceActivity {
      		}
      		
      		else{
-     			else log("Cannot update app. Sdcard is not writeable or present.");
+     			log("Cannot update app. Sdcard is not writeable or present.");
      				
      		}	
 			return true;
