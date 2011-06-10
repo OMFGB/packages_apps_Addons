@@ -5,32 +5,22 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.INTERNET" />
     <application>
-        <activity android:name=".Nightlys">
+        <activity android:name=".Nightlies">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+         <activity android:name=".nightlies.Nightlies">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+            </activity>
+        <activity android:name=".NightliesResolver">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
         <activity android:name=".Addons">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-       <activity android:name=".IncNightlys">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".HerocNightlys">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".DesirecNightlys">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".SupersonicNightlys">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
