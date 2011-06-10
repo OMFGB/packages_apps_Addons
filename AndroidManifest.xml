@@ -5,12 +5,7 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.INTERNET" />
     <application>
-        <activity android:name=".Nightlies">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-         <activity android:name=".nightlies.Nightlies">
+         <activity android:name=".nightlies.Nightlies" android:label="@string/nightlies_label">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -20,7 +15,7 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Addons">
+        <activity android:name=".Addons" android:label="@string/addons_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

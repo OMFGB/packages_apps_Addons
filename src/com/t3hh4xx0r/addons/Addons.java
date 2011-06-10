@@ -53,7 +53,6 @@ public class Addons extends PreferenceActivity {
 	private static final String SBC1 = "sbc_1";
 
         private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
-        public static final String BACKUP_DIR = "/sdcard/clockworkmod/backup";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
 	public static String PREF_LOCATION;
@@ -95,23 +94,16 @@ public class Addons extends PreferenceActivity {
 	}
 	
 	private boolean isSdCardPresent(){
-		
 		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
-		
 	}
 	
 	private boolean isSdCardWriteable(){
-		
 		return !Environment.MEDIA_MOUNTED_READ_ONLY.equals(Environment.getExternalStorageState());
-		
 	}
-
 
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
      		boolean value;
-     		
      		if(this.isSdCardPresent() && this.isSdCardWriteable()){
-     		
 		        if (preference == mGoogleApps) {
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/GAPPS.zip";
 				OUTPUT_NAME = "Gapps.zip";
@@ -137,13 +129,10 @@ public class Addons extends PreferenceActivity {
                         	new DownloadFileAsync().execute(DOWNLOAD_URL);
                 	}
      		}
-     		
      		else{
      			log("Cannot update app. Sdcard is not writeable or present.");
-     				
      		}	
 			return true;
-
 	}
 
 	@Override
@@ -343,12 +332,8 @@ public class Addons extends PreferenceActivity {
             e.printStackTrace();
             }
 	}
+
 	private void log(String msg) {
-
-	
-
 	    Log.d(TAG, msg);
-	
-
-  }
+  	}
 }

@@ -6,6 +6,8 @@ public class NightlyObject {
 	private String mVersion;
 	private String mBase;
 	private String mDevice;
+	private String mDate;
+
 	/**
 	 * @param mDevice the mDevice to set
 	 */
@@ -30,6 +32,18 @@ public class NightlyObject {
 	public String getBase() {
 		return mBase;
 	}
+        /**
+         * @param mDate the mDate to set
+         */
+        public void setDate(String mDate) {
+                this.mDate = mDate;
+        }
+        /**
+         * @return the mDate
+         */
+        public String getDate() {
+                return mDate;
+        }
 	/**
 	 * @param mVersion the mVersion to set
 	 */

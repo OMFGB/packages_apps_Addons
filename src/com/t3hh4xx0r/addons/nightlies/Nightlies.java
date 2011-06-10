@@ -31,13 +31,11 @@ public class Nightlies extends ListActivity {
 	private ProgressDialog mProgressDialog = null; 
 
     private Runnable viewNightlies;
-	private boolean mHasDownloadScript = true;
+    private boolean mHasDownloadScript = true;
     private String mScriptURL;
     private String mDownloadPath;
     private String mFileReadPath;
-    
-    
-	
+    	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +50,7 @@ public class Nightlies extends ListActivity {
         Bundle extras = i.getBundleExtra("DownloadScript");
         if(extras == null){
         	mHasDownloadScript = false;
-        	
         }else{
-        	
-        	//
         	mScriptURL = mDownloadPath + extras.getString("DownloadSCript");
         }
         
@@ -64,7 +59,6 @@ public class Nightlies extends ListActivity {
         // sdcard or from a url stream(sdcard is better, probaly should only do it this way)
         // Once that is set then set the file read path.
 
-        
         //  mFileReadPath;
         viewNightlies = new Runnable(){
             @Override
@@ -77,8 +71,6 @@ public class Nightlies extends ListActivity {
         thread.start();
         mProgressDialog = ProgressDialog.show(Nightlies.this,    
                 "Please wait...", "Retrieving data ...", true);
-        
-        
     }
     
     private Runnable returnRes = new Runnable() {
@@ -99,7 +91,6 @@ public class Nightlies extends ListActivity {
     	
     	try
         {
-
             mNightlies = new ArrayList<NightlyObject>();
     		
             String x = "";
@@ -115,13 +106,10 @@ public class Nightlies extends ListActivity {
             	is = this.getResources().openRawResource(R.raw.jsonomfgb);
             }
                 
-            
             byte [] buffer = new byte[is.available()];
             while (is.read(buffer) != -1);
             String jsontext = new String(buffer);
             JSONArray entries = new JSONArray(jsontext);
-            
-            
 
             x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
 
@@ -131,14 +119,13 @@ public class Nightlies extends ListActivity {
             	NightlyObject n = new NightlyObject();
                 JSONObject post = entries.getJSONObject(i);
                 
+		n.setDate(post.getString("date"));
                 n.setBase(post.getString("base"));
-                n.setDevice( post.getString("device"));
+                n.setDevice(post.getString("device"));
                 n.setURL(post.getString("url"));
                 n.setVersion(post.getString("version"));
-               
 
                 mNightlies.add(n);
-                
             }
             Thread.sleep(2000);
         }
@@ -148,7 +135,6 @@ public class Nightlies extends ListActivity {
             Log.e("BACKGROUND_PROC", je.getMessage());
              je.printStackTrace();
         }
-        
           runOnUiThread(returnRes);
       }
     
@@ -159,10 +145,10 @@ public class Nightlies extends ListActivity {
         // that will tell it which JSON file to download and use
         // We can optionally add a cache location
 
-Intent intent = new Intent(Intent.ACTION_MAIN);
+	Intent intent = new Intent(Intent.ACTION_MAIN);
 	intent.setClassName("com.t3hh4xx0r.addons", "com.t3hh4xx0r.addons.nightlies.Nightlies");
 	if ((Build.MODEL.equals("Incredible"))) {
-	//intent.putExtra("DownloadScript", "inc.js");
+	intent.putExtra("DownloadScript", "inc.js");
 	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	startActivity(intent);
 	
@@ -201,18 +187,20 @@ Intent intent = new Intent(Intent.ACTION_MAIN);
                 }
                 NightlyObject o = mNightly.get(position);
                 if (o != null) {
-                        TextView tt = (TextView) v.findViewById(R.id.toptext);
-                        TextView bt = (TextView) v.findViewById(R.id.bottomtext);
-                        if (tt != null) {
-                              tt.setText("Version: "+o.getVersion());                            }
-                        if(bt != null){
-                              bt.setText("Status: "+ o.getBase());
+                        TextView nightly = (TextView) v.findViewById(R.id.nightly_ver);
+                        TextView rom = (TextView) v.findViewById(R.id.rom_ver);
+			TextView date = (TextView) v.findViewById(R.id.comp_date);
+                        if (nightly != null) {
+                              nightly.setText("Nightly: "+o.getVersion());
                         }
-                }
+                        if (rom != null) {
+                              rom.setText("Rom Version: "+ o.getBase());
+                        }
+			if (date != null) {
+			     date.setText("Complied On: "+ o.getDate());
+			}
+                } 
                 return v;
         }
-
     }
-
-    
 }
