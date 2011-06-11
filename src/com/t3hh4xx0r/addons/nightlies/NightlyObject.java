@@ -1,5 +1,12 @@
 package com.t3hh4xx0r.addons.nightlies;
 
+import com.t3hh4xx0r.addons.nightlies.NightlyClickListener.onNightlyClickListener;
+
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 public class NightlyObject {
 	
 	private String mURL;
@@ -7,7 +14,12 @@ public class NightlyObject {
 	private String mBase;
 	private String mDevice;
 	private String mDate;
-
+	
+	LinearLayout mNightlyLayout;
+	TextView mNightlyVersion;
+	TextView mRomBaseVersion;
+	TextView mCompiledDate;
+	
 	/**
 	 * @param mDevice the mDevice to set
 	 */
@@ -68,5 +80,6 @@ public class NightlyObject {
 	public String getURL() {
 		return mURL;
 	}
-
+	
+	
 }
