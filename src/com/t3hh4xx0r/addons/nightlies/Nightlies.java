@@ -1,5 +1,6 @@
 package com.t3hh4xx0r.addons.nightlies;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 
 
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.t3hh4xx0r.addons.R;
+import com.t3hh4xx0r.utils.fileutils.Downloads;
 
 public class Nightlies extends ListActivity  {
     /** Called when the activity is first created. */
@@ -263,7 +266,12 @@ public class Nightlies extends ListActivity  {
             o.mRomBaseVersion = (TextView) v.findViewById(R.id.rom_ver);
             o.mCompiledDate = (TextView) v.findViewById(R.id.comp_date);
             
-            Log.d(TAG, ""  );
+            Downloads d = new Downloads();
+            
+            Log.d(TAG, "About to strart the download"  );
+            d.DownloadFile(o.getURL());
+                
+           
             
             Log.d(TAG,  o.getURL());
     	}

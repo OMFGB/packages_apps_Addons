@@ -45,7 +45,8 @@ import android.util.Slog;
 public class Addons extends PreferenceActivity {
 	public static String DATE = new SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(new Date());
 
-
+	private boolean DBG = true;
+	
 	private String TAG = "Addons";
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
