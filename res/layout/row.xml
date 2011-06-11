@@ -4,6 +4,7 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip">
     <LinearLayout
+    android:id="@+id/nightly_row"
         android:orientation="vertical"
         android:layout_width="0dip"
         android:layout_weight="1"
