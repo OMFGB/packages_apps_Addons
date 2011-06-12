@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.t3hh4xx0r.addons.R;
+import com.t3hh4xx0r.utils.fileutils.DownloadService;
 import com.t3hh4xx0r.utils.fileutils.Downloads;
 
 public class Nightlies extends ListActivity  {
@@ -137,6 +138,7 @@ public class Nightlies extends ListActivity  {
                 n.setDevice(post.getString("device"));
                 n.setURL(post.getString("url"));
                 n.setVersion(post.getString("version"));
+                n.setZipName(post.getString("name"));
 
                 mNightlies.add(n);
             }
@@ -220,6 +222,7 @@ public class Nightlies extends ListActivity  {
                         o.mNightlyVersion = (TextView) v.findViewById(R.id.nightly_ver);
                         o.mRomBaseVersion = (TextView) v.findViewById(R.id.rom_ver);
                         o.mCompiledDate = (TextView) v.findViewById(R.id.comp_date);
+                        
                         if (o.mNightlyVersion != null) 
                         {
                         	o.mNightlyVersion.setText("Nightly: "+o.getVersion());
@@ -266,11 +269,15 @@ public class Nightlies extends ListActivity  {
             o.mRomBaseVersion = (TextView) v.findViewById(R.id.rom_ver);
             o.mCompiledDate = (TextView) v.findViewById(R.id.comp_date);
             
-            Downloads d = new Downloads();
+       
             
             Log.d(TAG, "About to strart the download"  );
-            d.DownloadFile(o.getURL());
-                
+            
+            Intent downloadservice  = new Intent(Nightlies.this, DownloadService.class);
+            downloadservice.putExtra("URL", o.getURL());
+            downloadservice.putExtra("ZIP", o.getZipName());
+            
+            startService(downloadservice);   
            
             
             Log.d(TAG,  o.getURL());

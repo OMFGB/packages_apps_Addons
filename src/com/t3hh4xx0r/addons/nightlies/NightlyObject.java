@@ -14,6 +14,7 @@ public class NightlyObject {
 	private String mBase;
 	private String mDevice;
 	private String mDate;
+	private String mZipName;
 	
 	LinearLayout mNightlyLayout;
 	TextView mNightlyVersion;
@@ -79,6 +80,18 @@ public class NightlyObject {
 	 */
 	public String getURL() {
 		return mURL;
+	}
+	/**
+	 * @param mZipName the mZipName to set
+	 */
+	public void setZipName(String mZipName) {
+		this.mZipName = mZipName;
+	}
+	/**
+	 * @return the mZipName
+	 */
+	public String getZipName() {
+		return mZipName;
 	}
 	
 	
