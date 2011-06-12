@@ -22,7 +22,7 @@ public class DownloadService extends IntentService {
 	   */
 	  public DownloadService() {
 		  
-	      super("HelloIntentService");
+	      super("AddonsDownloadService");
 	  }
 
 	  /**
@@ -44,45 +44,12 @@ public class DownloadService extends IntentService {
 		  String zip = i.getStringExtra("ZIP");
 		  boolean installable = i.getBooleanExtra("INSTALLABLE", false);
 		  
-
-          //displayNotificationMessage("starting download Service");
           DownloadFile d = new DownloadFile(url,zip,this,!installable);
-          //displayNotificationMessage("download Service preparing to stop");
           
 	    
 	      
 	  }
 	  
-	  @Override
-      public void onDestroy()
-      {
-		  //displayNotificationMessage("Downaload service stopping");
-		  Log.d("DownloadService","stopping");
-          super.onDestroy();
-      }
-
-
-      private void displayNotificationMessage(String message)
-      {
-    	  String ns = Context.NOTIFICATION_SERVICE;
-    	  NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
-    	  
-    	  int icon = R.drawable.icon;        // icon from resources
-    	  CharSequence tickerText = "Hello";              // ticker-text
-    	  long when = System.currentTimeMillis();         // notification time
-    	  Context context = getApplicationContext();      // application Context
-    	  CharSequence contentTitle = "My notification";  // expanded message title
-    	  CharSequence contentText = message;      // expanded message text
-
-    	  Intent notificationIntent = new Intent(this, NightliesResolver.class);
-    	  PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-    	  // the next two lines initialize the Notification, using the configurations above
-    	  Notification notification = new Notification(icon, tickerText, when);
-    	  notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
-    	  mNotificationManager.notify(1, notification);
-          
-      }
 
 	  
 	}
