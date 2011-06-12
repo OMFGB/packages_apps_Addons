@@ -33,38 +33,43 @@ public class DownloadFile {
     private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
     private String OUTPUT_NAME;
     NotificationManager mNotificationManager;
+	private boolean mAddonIsFlashable = true;
 
 
-		public DownloadFile(String url, String zipName){
+		public DownloadFile(String url, String zipName, boolean flashable){
 			OUTPUT_NAME = zipName;
-			
+			mAddonIsFlashable = flashable;
 			
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
-			/*
-			  if(f.exists())
-			 
-			{
-				if (mAddonIsFlashable) 
+			
+			
+			  if(f.exists()){
+				  
+				if (mAddonIsFlashable ) 
 				{
-				   // handler.sendEmptyMessage(FLASH_ADDON);
+				   Downloads.flashPackage(OUTPUT_NAME);
 				} else 
 				{
-					//handler.sendEmptyMessage(INSTALL_ADDON);
+					Downloads.installPackage(OUTPUT_NAME);
 				}
 			
 		    } 
-			*/
-			//else {
+			
+			else {
 		    	
 			doInBackground(url);
+			
+			
+			}
 		    	
 			
 			
 			
 		}
-		public DownloadFile(String url, String zipName, Context context){
+		public DownloadFile(String url, String zipName, Context context, boolean flashable){
 			OUTPUT_NAME = zipName;
+			mAddonIsFlashable = flashable;
 			
 
 	    	String ns = Context.NOTIFICATION_SERVICE;
@@ -84,28 +89,28 @@ public class DownloadFile {
     	  // the next two lines initialize the Notification, using the configurations above
     	  Notification notification = new Notification(icon, tickerText, when);
     	  notification.setLatestEventInfo(tcontext, contentTitle, contentText, contentIntent);
-    	  mNotificationManager.notify(1, notification);
 
-			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
-			/*
-			  if(f.exists())
-			 
-			{
-				if (mAddonIsFlashable) 
+    	  File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
+			
+			
+    	  if(f.exists()){
+			  
+				if (mAddonIsFlashable ) 
 				{
-				   // handler.sendEmptyMessage(FLASH_ADDON);
+				   Downloads.flashPackage(OUTPUT_NAME);
 				} else 
 				{
-					//handler.sendEmptyMessage(INSTALL_ADDON);
+					Downloads.installPackage(OUTPUT_NAME);
 				}
 			
-		    } 
-			*/
-			//else {
-		    	
+		    
+		
+	    } else{
+
+	    	mNotificationManager.notify(1, notification);
 			doInBackground(url);
 			onPostExecute(context);
-		    	
+	    }
 			
 			
 			

@@ -139,6 +139,7 @@ public class Nightlies extends ListActivity  {
                 n.setURL(post.getString("url"));
                 n.setVersion(post.getString("version"));
                 n.setZipName(post.getString("name"));
+                n.setInstallable(post.getString("installable"));
 
                 mNightlies.add(n);
             }
@@ -271,11 +272,13 @@ public class Nightlies extends ListActivity  {
             
        
             
-            Log.d(TAG, "About to strart the download"  );
+            Log.d(TAG, "About to strart the download with zip " +   o.getZipName() );
             
             Intent downloadservice  = new Intent(Nightlies.this, DownloadService.class);
             downloadservice.putExtra("URL", o.getURL());
             downloadservice.putExtra("ZIP", o.getZipName());
+           
+            downloadservice.putExtra("INSTALLABLE", Boolean.parseBoolean(o.getInstallable()));
             
             startService(downloadservice);   
            

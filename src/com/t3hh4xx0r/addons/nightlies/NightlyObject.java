@@ -15,6 +15,7 @@ public class NightlyObject {
 	private String mDevice;
 	private String mDate;
 	private String mZipName;
+	private String mInstallable;
 	
 	LinearLayout mNightlyLayout;
 	TextView mNightlyVersion;
@@ -92,6 +93,18 @@ public class NightlyObject {
 	 */
 	public String getZipName() {
 		return mZipName;
+	}
+	/**
+	 * @param mInstallable the mInstallable to set
+	 */
+	public void setInstallable(String mInstallable) {
+		this.mInstallable = mInstallable;
+	}
+	/**
+	 * @return the mInstallable
+	 */
+	public String getInstallable() {
+		return mInstallable;
 	}
 	
 	

@@ -42,10 +42,11 @@ public class DownloadService extends IntentService {
 		  Intent i = intent;
 		  String url = i.getStringExtra("URL");
 		  String zip = i.getStringExtra("ZIP");
+		  boolean installable = i.getBooleanExtra("INSTALLABLE", false);
 		  
 
           //displayNotificationMessage("starting download Service");
-          DownloadFile d = new DownloadFile(url,zip,this);
+          DownloadFile d = new DownloadFile(url,zip,this,!installable);
           //displayNotificationMessage("download Service preparing to stop");
           
 	    

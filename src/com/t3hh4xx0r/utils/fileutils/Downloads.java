@@ -39,14 +39,13 @@ public class Downloads {
 
 
 	private boolean DBG = true;
-private String TAG = "Downloads";
+private static String TAG = "Downloads";
 
 private static File extStorageDirectory = Environment.getExternalStorageDirectory();
     private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
     public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
 public static String PREF_LOCATION;
-private static String OUTPUT_NAME = "OutPutTester";
 private static String DOWNLOAD_URL;
 
 private int DOWNLOAD_PROGRESS = 0;
@@ -68,37 +67,18 @@ private boolean isSdCardWriteable(){
 }
 
 
-private Handler handler = new Handler() {
-	@Override
-	public void handleMessage(Message msg) {
-		switch(msg.what){
-		case FLASH_ADDON:
-			flashPackage();
-			break;
-		case FLASH_COMPLETE:
-			//pbarDialog.dismiss();
-			break;
-		case INSTALL_ADDON:
-			installPackage();
-			break;
-		}
-		return;
-	}
-};
 
 
 
-public void installPackage() {
+public static void installPackage(String outputzip) {
 
-            //pbarDialog = new ProgressDialog(Addons.this);
-           // pbarDialog.setMessage("Please Wait\n\nInstalling Addon...");
-            //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-            //pbarDialog.show();
 
+		final String OUTPUT_NAME = outputzip;
+	    Log.d(TAG,OUTPUT_NAME);
+	    
             Thread cmdThread = new Thread(){
                     @Override
                     public void run() {
-                            Looper.prepare();
 
                             try{Thread.sleep(1000);}catch(InterruptedException e){ }
 
@@ -109,7 +89,7 @@ public void installPackage() {
                             try {
                                     p = run.exec("su");
                                     out = new DataOutputStream(p.getOutputStream());
-				out.writeBytes("busybox mount -o rw,remount /system\n");
+                                    out.writeBytes("busybox mount -o rw,remount /system\n");
                                     out.writeBytes("busybox cp " + DOWNLOAD_DIR + OUTPUT_NAME + " /system/app/\n");
                                     out.writeBytes("busybox mount -o ro,remount /system\n");
                                     out.flush();
@@ -118,19 +98,17 @@ public void installPackage() {
                                     return;
                             }
 
-                            handler.sendEmptyMessage(FLASH_COMPLETE);
                     }
             };
             cmdThread.start();
     }
 
-public void flashPackage() {
+public static void flashPackage(String outputzip) {
 
-	//pbarDialog = new ProgressDialog(Addons.this);
-	//pbarDialog.setMessage("Please Wait\n\nPreparing Addon for flashing...");
-	//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-	//pbarDialog.show();
 
+	final String OUTPUT_NAME = outputzip;
+	Log.d(TAG,OUTPUT_NAME);
+	
 	Thread cmdThread = new Thread(){
 		@Override
 		public void run() {
@@ -140,7 +118,6 @@ public void flashPackage() {
                             updateDirectory.mkdir();
                     }
                     
-			Looper.prepare();
 
 			try
 			{
@@ -156,6 +133,8 @@ public void flashPackage() {
 			Process p = null;
 
 			try {
+
+            	
                                 p = run.exec("su");
 				out = new DataOutputStream(p.getOutputStream());
 				out.writeBytes("busybox echo 'install_zip(\"" + DOWNLOAD_DIR + OUTPUT_NAME +"\");' > " + EXTENDEDCMD + "\n");
@@ -165,8 +144,7 @@ public void flashPackage() {
 				e.printStackTrace();
 				return;
 			}
-
-			handler.sendEmptyMessage(FLASH_COMPLETE);		
+	
 		}
 	};
 	cmdThread.start();
