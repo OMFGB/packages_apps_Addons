@@ -10,18 +10,14 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
             </activity>
-        <activity android:name=".NightliesResolver">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
+  
+        
         <activity android:name=".Addons" android:label="@string/addons_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-        
-        
+
 		<service android:name="com.t3hh4xx0r.utils.fileutils.DownloadService"></service>
     </application>
 </manifest>

@@ -2,6 +2,7 @@ package com.t3hh4xx0r.utils.fileutils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,18 +11,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.t3hh4xx0r.addons.NightliesResolver;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.util.Log;
 
 
 import com.t3hh4xx0r.addons.R;
+import com.t3hh4xx0r.addons.nightlies.Nightlies;
 
 public class DownloadFile {
 	public int mPercentage;
@@ -36,6 +39,8 @@ public class DownloadFile {
     private boolean IsBeingNotified = false;
 	private boolean mAddonIsFlashable = true;
 	String FULL_PATH_TO_FLASHABLE;
+	private static boolean mIsCompleted = false;
+	private static boolean mUserWantToflash = false;
 
 	/**
 	 * Downloads a file from the specified URL, upon finishing download it will be
@@ -45,33 +50,20 @@ public class DownloadFile {
 	 * @param zipName The name of the zip/apk once downloaded
 	 * @param flashable To determine if the pacakage should be flashed through recovery or if installation is OK
 	 */
+	
+	public static boolean isCompleted(){
+		return mIsCompleted;
+	} 
 		public DownloadFile(String url, String zipName, boolean flashable){
 			OUTPUT_NAME = zipName;
 			mAddonIsFlashable = flashable;
 			
 
-			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			
-			
-			  if(f.exists()){
-				  
-				FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
-				if (mAddonIsFlashable ) 
-				{
-				   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
-				} else 
-				{
-					Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
-				}
-			
-		    } 
-			
-			else {
-		    	
 			doInBackground(url);
 			
 			
-			}
+			
 		    	
 			
 			
@@ -103,7 +95,7 @@ public class DownloadFile {
     	  CharSequence contentTitle = "My notification";  // expanded message title
     	  CharSequence contentText = "Downloading";      // expanded message text
 
-    	  Intent notificationIntent = new Intent(context, NightliesResolver.class);
+    	  Intent notificationIntent = new Intent(context, Nightlies.class);
     	  PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
     	  // the next two lines initialize the Notification, using the configurations above
@@ -114,24 +106,12 @@ public class DownloadFile {
 
 		  
 			
-    	  if(f.exists()){
-			  	FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
-				if (mAddonIsFlashable ) 
-				{
-				   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
-				} else 
-				{
-					Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
-				}
-			
-		    
-		
-	    } else{
+    	 
 	    	IsBeingNotified = true;
 	    	mNotificationManager.notify(1, notification);
 			doInBackground(url);
 			onPostExecute(context);
-	    }
+	    
 			
 			
 			
@@ -177,11 +157,15 @@ public class DownloadFile {
 
 				while ((count = input.read(data)) != -1) {
 					total += count;
-					log("" + (int)((total*100)/lenghtOfFile));
-					//publishProgress(""+(int)((total*100)/lenghtOfFile));
+					///log("" + (int)((total*100)/lenghtOfFile));
 					output.write(data, 0, count);
 				}
 				if(IsBeingNotified)mNotificationManager.cancel(1);
+				
+				if(((int)((total*100)/lenghtOfFile)) == 100 ){
+					log("The download has finished");
+					mIsCompleted  = true;
+				}
 				
 				output.flush();
 				output.close();
@@ -192,6 +176,27 @@ public class DownloadFile {
 			}
 			return null;
 
+		}
+		public static boolean checkFileIsCompleted(String url, String outputname){
+	
+			
+			/*
+			 * What needs to be done here is to check that the downloaded file is the same bit stream as the 
+			 * URL that is was downloaded from.
+			 * If they are the same return true else the files are not the same and return false
+			 * 
+			 */
+			
+            if(1 != 1){
+            	
+            	return false;
+            	
+            }
+            
+			
+			return true;
+			
+			
 		}
 
 		protected void onPostExecute(Context context) {
@@ -205,7 +210,7 @@ public class DownloadFile {
 	    	  CharSequence contentTitle = "My notification";  // expanded message title
 	    	  CharSequence contentText = "Download Finished";      // expanded message text
 
-	    	  Intent notificationIntent = new Intent(context, NightliesResolver.class);
+	    	  Intent notificationIntent = new Intent(context, Nightlies.class);
 	    	  PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
 	    	  // the next two lines initialize the Notification, using the configurations above
@@ -276,4 +281,6 @@ public class DownloadFile {
 	private void log(String msg) {
 	    Log.d(TAG , msg);
 		}
+	
+	
 	}

@@ -10,13 +10,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,8 +49,18 @@ public class Nightlies extends ListActivity  {
     private boolean mHasDownloadScript = true;
     private String mScriptURL;
     private String mDownloadPath;
-    private String mFileReadPath;
-    private String mDeviceScript;
+    private String mFileReadPath; 
+    //This is needed for device permanace for intents that
+    // do not send the device type with it. IE. notifications
+    private static String mDeviceScript;
+
+	private boolean mUserWantFlash  = false;
+    
+
+	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
+	private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
+	    
+	private boolean mIsTesting = true;
     	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +75,11 @@ public class Nightlies extends ListActivity  {
         setListAdapter(this.mAdapter);
         
         Intent i = this.getIntent();
-        mDeviceScript = i.getStringExtra("DownloadScript");
+        if(mDeviceScript == null){
+        	// We need to retrive the device script name, but only once
+        	mDeviceScript = i.getStringExtra("DownloadScript");
+        
+        }
         if(mDeviceScript == null ){
         	mHasDownloadScript = false;
         }else{
@@ -114,7 +131,7 @@ public class Nightlies extends ListActivity  {
             String x = "";
             InputStream is;
             // Need to actually put our sript locatio here
-            if(this.mHasDownloadScript == false)
+            if(this.mHasDownloadScript == false || mIsTesting)
             	is = this.getResources().openRawResource(R.raw.jsonomfgb);
             else{
             	
@@ -140,6 +157,7 @@ public class Nightlies extends ListActivity  {
                 
             byte [] buffer = new byte[is.available()];
             while (is.read(buffer) != -1);
+            
             String jsontext = new String(buffer);
             JSONArray entries = new JSONArray(jsontext);
 
@@ -175,37 +193,7 @@ public class Nightlies extends ListActivity  {
     
     
     
-	
-    
-    /*
-    public void ResolveNighlies(){
-        
-        // What i will do here is pass an intent to ourself
-        // that will tell it which JSON file to download and use
-        // We can optionally add a cache location
 
-	Intent intent = new Intent(Intent.ACTION_MAIN);
-	intent.setClassName("com.t3hh4xx0r.addons", "com.t3hh4xx0r.addons.nightlies.Nightlies");
-	if ((Build.MODEL.equals("Incredible"))) {
-	intent.putExtra("DownloadScript", "inc.js");
-	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	startActivity(intent);
-	
-	} else if ((Build.MODEL.equals("Eris"))) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        } else if ((Build.MODEL.equals("Evo"))) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-        } else if ((Build.MODEL.equals("Hero"))) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-
-	}
-    }
-    */
     static int adapters = 0; 
     private class NightlyAdapter extends ArrayAdapter<NightlyObject> implements NightlyClickListener.onNightlyClickListener{
 
@@ -278,6 +266,8 @@ public class Nightlies extends ListActivity  {
                 
         }
 
+
+    	    
     	@Override
     	public void OnNightlyClick(View v, int position) {
     		// TODO Auto-generated method stub
@@ -298,19 +288,69 @@ public class Nightlies extends ListActivity  {
             downloadservice.putExtra("ZIP", o.getZipName());
            
             downloadservice.putExtra("INSTALLABLE", Boolean.parseBoolean(o.getInstallable()));
+            Log.d(TAG,  o.getURL());
             
-            startService(downloadservice);   
+            if(!DownloadFile.checkFileIsCompleted(o.getURL(), o.getZipName())){
+            	
+            	startService(downloadservice);   
+            	
+            }else
+            {
+            	String OUTPUT_NAME = o.getZipName();
+            	alertbox("Warning","About to flash package: " + OUTPUT_NAME );
+            	Log.d(TAG, "About to flash package: " + OUTPUT_NAME );
+            	
+            	File f = new File (DOWNLOAD_DIR + o.getZipName());
+    			
+    			
+  			  if(f.exists() && mUserWantFlash ){
+
+  						String FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
+  						if (!Boolean.parseBoolean(o.getInstallable())) 
+  						{
+  						   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
+  						} else 
+  						{
+  							Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
+  						}
+  				  
+  			
+  			  } 
+  			  
+            }
            
             
-            Log.d(TAG,  o.getURL());
+            
     	}
     	
+
 
     	
 
 		
     }
     
+	protected void alertbox(String title, String mymessage)
+	   {
+	   new AlertDialog.Builder(this)
+	      .setMessage(mymessage)
+	      .setTitle(title)
+	      .setCancelable(true)
+	      .setPositiveButton("OK",
+	         new DialogInterface.OnClickListener() {
+	         public void onClick(DialogInterface dialog, int whichButton){
+
+	     		mUserWantFlash = false;
+	         }
+	         })
+	         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+	         public void onClick(DialogInterface dialog, int whichButton){
+	        	 mUserWantFlash = true;; 
+	         }
+	         })
+	      .show();
+	   }
+ 	
     
     
 }

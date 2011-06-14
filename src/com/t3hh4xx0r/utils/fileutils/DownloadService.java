@@ -1,7 +1,6 @@
 package com.t3hh4xx0r.utils.fileutils;
 
 
-import com.t3hh4xx0r.addons.NightliesResolver;
 import com.t3hh4xx0r.addons.R;
 
 import android.app.IntentService;
