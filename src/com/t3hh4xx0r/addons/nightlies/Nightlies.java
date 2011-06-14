@@ -1,6 +1,8 @@
 package com.t3hh4xx0r.addons.nightlies;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.t3hh4xx0r.addons.R;
+import com.t3hh4xx0r.utils.fileutils.DownloadFile;
 import com.t3hh4xx0r.utils.fileutils.DownloadService;
 import com.t3hh4xx0r.utils.fileutils.Downloads;
 
@@ -44,6 +47,7 @@ public class Nightlies extends ListActivity  {
     private String mScriptURL;
     private String mDownloadPath;
     private String mFileReadPath;
+    private String mDeviceScript;
     	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,11 +62,11 @@ public class Nightlies extends ListActivity  {
         setListAdapter(this.mAdapter);
         
         Intent i = this.getIntent();
-        String extras = i.getStringExtra("DownloadScript");
-        if(extras == null ){
+        mDeviceScript = i.getStringExtra("DownloadScript");
+        if(mDeviceScript == null ){
         	mHasDownloadScript = false;
         }else{
-        	mScriptURL = mDownloadPath + extras;
+        	mScriptURL = mDownloadPath + mDeviceScript;
         }
         
         // This is where the script comes in
@@ -117,7 +121,21 @@ public class Nightlies extends ListActivity  {
             	// Pull it from the sdcard and read it
             	// here to compile
             	// 
-            	is = this.getResources().openRawResource(R.raw.jsonomfgb);
+            	Log.d(TAG,"Updating app from file");
+            	File updateFile = new File(DownloadFile.updateAppManifest(mDeviceScript));
+            	try{
+            		
+            		is = new FileInputStream(updateFile);
+            	}
+            	catch(FileNotFoundException e){
+            		
+            			e.printStackTrace();
+            			Log.d(TAG, "Could not update app from file resource, the file was not found. Reverting to test script");
+                    	is = this.getResources().openRawResource(R.raw.jsonomfgb);
+            		
+            	}
+            	
+            	
             }
                 
             byte [] buffer = new byte[is.available()];
@@ -149,13 +167,14 @@ public class Nightlies extends ListActivity  {
         catch (Exception je)
         {
 
-            Log.e("BACKGROUND_PROC", je.getMessage());
+            Log.e(TAG, je.getMessage());
              je.printStackTrace();
         }
           runOnUiThread(returnRes);
       }
     
-
+    
+    
 	
     
     /*

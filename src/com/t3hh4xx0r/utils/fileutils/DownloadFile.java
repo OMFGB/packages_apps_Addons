@@ -25,17 +25,26 @@ import com.t3hh4xx0r.addons.R;
 
 public class DownloadFile {
 	public int mPercentage;
-	public boolean DBG = true;
-	private String TAG = "DownloadFile";
+	public static boolean DBG = true;
+	private static String TAG = "DownloadFile";
 
 
 	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
     private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
     private String OUTPUT_NAME;
     NotificationManager mNotificationManager;
+    private boolean IsBeingNotified = false;
 	private boolean mAddonIsFlashable = true;
+	String FULL_PATH_TO_FLASHABLE;
 
-
+	/**
+	 * Downloads a file from the specified URL, upon finishing download it will be
+	 * called {@link zipName}.  
+	 * 
+	 * @param url The url that will be downloaded
+	 * @param zipName The name of the zip/apk once downloaded
+	 * @param flashable To determine if the pacakage should be flashed through recovery or if installation is OK
+	 */
 		public DownloadFile(String url, String zipName, boolean flashable){
 			OUTPUT_NAME = zipName;
 			mAddonIsFlashable = flashable;
@@ -46,12 +55,13 @@ public class DownloadFile {
 			
 			  if(f.exists()){
 				  
+				FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
 				if (mAddonIsFlashable ) 
 				{
-				   Downloads.flashPackage(OUTPUT_NAME);
+				   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
 				} else 
 				{
-					Downloads.installPackage(OUTPUT_NAME);
+					Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
 				}
 			
 		    } 
@@ -67,6 +77,16 @@ public class DownloadFile {
 			
 			
 		}
+		/**
+		 * Downloads a file from the specified URL, upon finishing download it will be
+		 * called {@link zipName}. Notifications can be passed from this constructor
+		 * to make a system notification 
+		 * 
+		 * @param url The url that will be downloaded
+		 * @param zipName The name of the zip/apk once downloaded
+		 * @param context A context so that notifications can be passed to the system
+		 * @param flashable To determine if the pacakage should be flashed through recovery or if installation is OK
+		 */
 		public DownloadFile(String url, String zipName, Context context, boolean flashable){
 			OUTPUT_NAME = zipName;
 			mAddonIsFlashable = flashable;
@@ -91,22 +111,23 @@ public class DownloadFile {
     	  notification.setLatestEventInfo(tcontext, contentTitle, contentText, contentIntent);
 
     	  File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
-			
+
+		  
 			
     	  if(f.exists()){
-			  
+			  	FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
 				if (mAddonIsFlashable ) 
 				{
-				   Downloads.flashPackage(OUTPUT_NAME);
+				   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
 				} else 
 				{
-					Downloads.installPackage(OUTPUT_NAME);
+					Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
 				}
 			
 		    
 		
 	    } else{
-
+	    	IsBeingNotified = true;
 	    	mNotificationManager.notify(1, notification);
 			doInBackground(url);
 			onPostExecute(context);
@@ -117,7 +138,14 @@ public class DownloadFile {
 		}
 		
 
-		protected String doInBackground(String... aurl) {
+		/**
+		 * This is the worker function of the service. It handles 
+		 * all downloads not associated with updating the app.
+		 * 
+		 * @param aurl The pacakage URL to download
+		 * @return
+		 */
+		private String doInBackground(String... aurl) {
 
 			if(DBG )log("do in background"); 
 			int count;
@@ -153,7 +181,7 @@ public class DownloadFile {
 					//publishProgress(""+(int)((total*100)/lenghtOfFile));
 					output.write(data, 0, count);
 				}
-				mNotificationManager.cancel(1);
+				if(IsBeingNotified)mNotificationManager.cancel(1);
 				
 				output.flush();
 				output.close();
@@ -191,30 +219,58 @@ public class DownloadFile {
 
 		
 	
+	/**
+	 * 
+	 * 
+	 * @param device The device script to pass
+	 * @return The string to the full path to the update script
+	 */
+	public static String updateAppManifest(String device) {
+			
+		  String targetFileName = device;
+		  String path ="https://raw.github.com/OMFGB/NightlyBuildsManifest/master/" + targetFileName;
+    
+	      File downloadDir = new File (DOWNLOAD_DIR);
+			if (!downloadDir.isDirectory()) {
+				if(DBG )Log.d(TAG,"Creating download dir" + DOWNLOAD_DIR);
+				downloadDir.mkdirs();
+				
+			}
+			
+			
+			
+			try {
 
-	public void updateApp() {
-		
-	       try {
-	   		if(DBG  )log("Updating app"); 
-	            String path ="http://r2doesinc.bitsurge.net/Addons/nightly_version.txt";
-	            String targetFileName = "available_version.txt";
-	            boolean eof = false;
-	            URL u = new URL(path);
-	            HttpURLConnection c = (HttpURLConnection) u.openConnection();
-	            c.setRequestMethod("GET");
-	            c.setDoOutput(true);
-	            c.connect();
-	            FileOutputStream f = new FileOutputStream(new File(extStorageDirectory + "/t3hh4xx0r/" + targetFileName));
-	            InputStream in = c.getInputStream();
-	            byte[] buffer = new byte[1024];
-	            int len1 = 0;
-	            while ( (len1 = in.read(buffer)) > 0 ) {
-	                f.write(buffer,0, len1);
-	            }
-	            f.close();
-	        } catch (IOException e) {
-	        e.printStackTrace();
-	        }
+				int count;
+				URL url = new URL(path);
+				URLConnection conexion = url.openConnection();
+				conexion.connect();
+				if(DBG )Log.d(TAG,"Connection complete");
+
+				int lenghtOfFile = conexion.getContentLength();
+
+				InputStream input = new BufferedInputStream(url.openStream());
+				OutputStream output = new FileOutputStream(DOWNLOAD_DIR + "/" + targetFileName);
+
+				byte data[] = new byte[1024];
+
+				long total = 0;
+
+				while ((count = input.read(data)) != -1) {
+					total += count;
+					Log.d(TAG,"" + (int)((total*100)/lenghtOfFile));
+					output.write(data, 0, count);
+				}
+				
+				output.flush();
+				output.close();
+				input.close();
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
+
+	        return (DOWNLOAD_DIR + targetFileName);
 	}
 
 	private void log(String msg) {
