@@ -186,14 +186,35 @@ public class DownloadFile {
 			 * If they are the same return true else the files are not the same and return false
 			 * 
 			 */
+			int lengthOfFile;
+			File f = new File(DOWNLOAD_DIR + outputname);
 			
-            if(1 != 1){
-            	
+			try{
+			if(DBG )log("Creating connection");
+			URL aurl = new URL(url);
+			URLConnection conexion = aurl.openConnection();
+			conexion.connect();
+			if(DBG )log("Connection complete");
+			
+			lengthOfFile = conexion.getContentLength();
+			
+			}
+			catch(Exception e){
+				lengthOfFile = -1;
+				e.printStackTrace();
+			}
+			
+			
+
+			if(DBG )log("Determining if files are the same");
+            if((int)f.length() != lengthOfFile){
+            	if(DBG )log("Files are not the same");
             	return false;
             	
             }
             
-			
+
+        	if(DBG )log("Files are the same");
 			return true;
 			
 			
@@ -255,7 +276,7 @@ public class DownloadFile {
 				int lenghtOfFile = conexion.getContentLength();
 
 				InputStream input = new BufferedInputStream(url.openStream());
-				OutputStream output = new FileOutputStream(DOWNLOAD_DIR + "/" + targetFileName);
+				OutputStream output = new FileOutputStream(DOWNLOAD_DIR + targetFileName);
 
 				byte data[] = new byte[1024];
 
@@ -278,7 +299,7 @@ public class DownloadFile {
 	        return (DOWNLOAD_DIR + targetFileName);
 	}
 
-	private void log(String msg) {
+	private static void log(String msg) {
 	    Log.d(TAG , msg);
 		}
 	

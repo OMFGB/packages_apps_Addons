@@ -301,10 +301,17 @@ public class Nightlies extends ListActivity  {
             	Log.d(TAG, "About to flash package: " + OUTPUT_NAME );
             	
             	File f = new File (DOWNLOAD_DIR + o.getZipName());
+            	try{
+            		Thread.sleep(2000);
+            	}
+            	catch(Exception e){
+            		
+            		e.printStackTrace();
+            	}
     			
     			
   			  if(f.exists() && mUserWantFlash ){
-
+  				  		Log.d(TAG, "User approved flashing, begining flash.");
   						String FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
   						if (!Boolean.parseBoolean(o.getInstallable())) 
   						{
@@ -315,9 +322,15 @@ public class Nightlies extends ListActivity  {
   						}
   				  
   			
-  			  } 
-  			  
+  			  } else{
+
+			  		Log.d(TAG, "User did not approve flashing.");
+  				  
+  			  }
+
+              mUserWantFlash = false;
             }
+            
            
             
             
@@ -340,12 +353,12 @@ public class Nightlies extends ListActivity  {
 	         new DialogInterface.OnClickListener() {
 	         public void onClick(DialogInterface dialog, int whichButton){
 
-	     		mUserWantFlash = false;
+	     		mUserWantFlash = true;
 	         }
 	         })
 	         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	         public void onClick(DialogInterface dialog, int whichButton){
-	        	 mUserWantFlash = true;; 
+	        	 mUserWantFlash = false; 
 	         }
 	         })
 	      .show();
