@@ -60,7 +60,7 @@ public class Nightlies extends ListActivity  {
 	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
 	private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
 	    
-	private boolean mIsTesting = true;
+	private boolean mIsTesting = false;
     	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,6 +147,7 @@ public class Nightlies extends ListActivity  {
             	catch(FileNotFoundException e){
             		
             			e.printStackTrace();
+            			AlertBox("Warining","Nighly manifest is incoreect, please contact the ROM devlopers @r2DoesInc, @linuxmotion, @xoomdev or @davidjr621_");
             			Log.d(TAG, "Could not update app from file resource, the file was not found. Reverting to test script");
                     	is = this.getResources().openRawResource(R.raw.jsonomfgb);
             		
@@ -161,7 +162,7 @@ public class Nightlies extends ListActivity  {
             String jsontext = new String(buffer);
             JSONArray entries = new JSONArray(jsontext);
 
-            x = "JSON parsed.\nThere are [" + entries.length() + "]\n\n";
+            x = "JSON parsed.\nThere are [" + entries.length() + "] entries.\n\n";
 
             int i;
             for (i=0;i<entries.length();i++)
@@ -361,7 +362,23 @@ public class Nightlies extends ListActivity  {
 	   		
 		
 	   }
- 	
+	protected void AlertBox(String title, String mymessage)
+	   {
+	   new AlertDialog.Builder(this)
+	      .setMessage(mymessage)
+	      .setTitle(title)
+	      .setCancelable(false)
+	      .setPositiveButton("OK",
+	         new DialogInterface.OnClickListener() {
+	         public void onClick(DialogInterface dialog, int whichButton){
+	         }
+	         })
+	         
+	         
+	      .show();
+	   		
+		
+	   }
     
     
 }
