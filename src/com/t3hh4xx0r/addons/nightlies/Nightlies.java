@@ -289,79 +289,87 @@ public class Nightlies extends ListActivity  {
            
             downloadservice.putExtra("INSTALLABLE", Boolean.parseBoolean(o.getInstallable()));
             Log.d(TAG,  o.getURL());
+       
+            final Boolean Installable = !Boolean.parseBoolean(o.getInstallable());
+            final String zipName = o.getZipName();
+            	
+		            if(!DownloadFile.checkFileIsCompleted(o.getURL(), o.getZipName())){
+		            	
+		            	startService(downloadservice);   
+		            	
+		            }else
+		            {	
+		            	FlashAlertBox("Warning","About to flash package: " + zipName , Installable, zipName);
+	
+		            }
+		            	
+                
+            	
             
-            if(!DownloadFile.checkFileIsCompleted(o.getURL(), o.getZipName())){
-            	
-            	startService(downloadservice);   
-            	
-            }else
-            {
-            	String OUTPUT_NAME = o.getZipName();
-            	alertbox("Warning","About to flash package: " + OUTPUT_NAME );
-            	Log.d(TAG, "About to flash package: " + OUTPUT_NAME );
-            	
-            	File f = new File (DOWNLOAD_DIR + o.getZipName());
-            	try{
-            		Thread.sleep(2000);
-            	}
-            	catch(Exception e){
-            		
-            		e.printStackTrace();
-            	}
+            
+            
     			
     			
-  			  if(f.exists() && mUserWantFlash ){
-  				  		Log.d(TAG, "User approved flashing, begining flash.");
-  						String FULL_PATH_TO_FLASHABLE = (DOWNLOAD_DIR + OUTPUT_NAME);
-  						if (!Boolean.parseBoolean(o.getInstallable())) 
-  						{
-  						   Downloads.flashPackage(FULL_PATH_TO_FLASHABLE);
-  						} else 
-  						{
-  							Downloads.installPackage(FULL_PATH_TO_FLASHABLE);
-  						}
-  				  
-  			
-  			  } else{
-
-			  		Log.d(TAG, "User did not approve flashing.");
-  				  
-  			  }
-
-              mUserWantFlash = false;
-            }
+  		
+        }
             
            
             
             
-    	}
+   }
     	
 
 
     	
 
-		
-    }
+	
     
-	protected void alertbox(String title, String mymessage)
+	protected void FlashAlertBox(String title, String mymessage, final boolean Installable, final String OUTPUT_NAME)
 	   {
 	   new AlertDialog.Builder(this)
 	      .setMessage(mymessage)
 	      .setTitle(title)
-	      .setCancelable(true)
+	      .setCancelable(false)
 	      .setPositiveButton("OK",
 	         new DialogInterface.OnClickListener() {
 	         public void onClick(DialogInterface dialog, int whichButton){
-
-	     		mUserWantFlash = true;
+	        	 
+	        	 Thread FlashThread = new Thread(){
+	            		
+	            		@Override
+	            	    public void	run(){
+	            			
+	            			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
+	            			
+	            			if(f.exists() ){
+		  				  		Log.d(TAG, "User approved flashing, begining flash.");
+		  						if (Installable) 
+		  						{
+		  						   Downloads.flashPackage(OUTPUT_NAME);
+		  						} else 
+		  						{
+		  							Downloads.installPackage(OUTPUT_NAME );
+		  						}
+	  				  
+	            			} 
+	            			
+	            	  }
+	            };
+	            
+	            FlashThread.run();
 	         }
 	         })
 	         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	         public void onClick(DialogInterface dialog, int whichButton){
-	        	 mUserWantFlash = false; 
+	        	 // Do nothing
+	        	 Log.d(TAG, "User did not approve flashing.");
 	         }
 	         })
+	         
+	         
 	      .show();
+	   		
+		
 	   }
  	
     
