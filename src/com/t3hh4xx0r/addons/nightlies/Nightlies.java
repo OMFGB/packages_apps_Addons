@@ -301,21 +301,11 @@ public class Nightlies extends ListActivity  {
 		            {	
 		            	FlashAlertBox("Warning","About to flash package: " + zipName , Installable, zipName);
 	
-		            }
-		            	
-                
-            	
-            
-            
-            
-    			
-    			
+		            }			
   		
         }
-            
-           
-            
-            
+    	
+                    
    }
     	
 
