@@ -225,11 +225,11 @@ public class DownloadFile {
 			if(DBG )log("Post executing download"); 
 			//removeDialog(DOWNLOAD_PROGRESS);
 			 int icon = R.drawable.icon;        // icon from resources
-	    	  CharSequence tickerText = "Hello";              // ticker-text
+	    	  CharSequence tickerText = "Starting download";              // ticker-text
 	    	  long when = System.currentTimeMillis();         // notification time
 	    	  Context tcontext = context.getApplicationContext();      // application Context
-	    	  CharSequence contentTitle = "My notification";  // expanded message title
-	    	  CharSequence contentText = "Download Finished";      // expanded message text
+	    	  CharSequence contentTitle = "OMFGB Nightlies";  // expanded message title
+	    	  CharSequence contentText = "Download finished";      // expanded message text
 
 	    	  Intent notificationIntent = new Intent(context, Nightlies.class);
 	    	  PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
