@@ -38,6 +38,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.util.DisplayMetrics;
 
 import android.util.Log;
 import android.util.Slog;
@@ -50,8 +51,8 @@ public class Addons extends PreferenceActivity {
 	private String TAG = "Addons";
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
-	private static final String STOCK_KB = "stock_keyboard";
 	private static final String SBC1 = "sbc_1";
+	private static final String OMFT = "omft";
 
         private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
@@ -69,8 +70,8 @@ public class Addons extends PreferenceActivity {
 	private ProgressDialog pbarDialog;
 
 	private Preference mGoogleApps;
-	private Preference mStockKB;
 	private Preference mSBC1;
+	private Preference mOMFT;
 
 	private boolean mAddonIsFlashable;
 
@@ -83,11 +84,18 @@ public class Addons extends PreferenceActivity {
                 PreferenceScreen prefSet = getPreferenceScreen();
 
 	        mGoogleApps = prefSet.findPreference(GOOGLE_APPS);
-		mStockKB = prefSet.findPreference(STOCK_KB);
 		mSBC1 = prefSet.findPreference(SBC1);
 	        if ((!Build.MODEL.equals("Incredible"))) {
 			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
 		        kernelCategory.removePreference(mSBC1);
+		}
+
+                mOMFT = prefSet.findPreference(OMFT);
+		switch (getResources().getDisplayMetrics().densityDpi) {
+		case DisplayMetrics.DENSITY_MEDIUM:
+                        PreferenceCategory appsCategory = (PreferenceCategory) findPreference("apps_category");
+                        appsCategory.removePreference(mOMFT);
+		break;
 		}
 
 		if(this.isSdCardPresent() && this.isSdCardWriteable())updateApp();
@@ -109,15 +117,16 @@ public class Addons extends PreferenceActivity {
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/GAPPS.zip";
 				OUTPUT_NAME = "Gapps.zip";
 				mAddonIsFlashable = true;
-       			} else if (preference == mStockKB) {
-				OUTPUT_NAME = "LatinIME.apk";
-                                DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/LatinIME.apk";
-				mAddonIsFlashable = false;
 			} else if (preference == mSBC1) {
                                 OUTPUT_NAME = "OMFGBk-sbc_1.zip";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGBk-sbc-1.zip";
                                 mAddonIsFlashable = true;
+                        } else if (preference == mOMFT) {
+                                OUTPUT_NAME = "OMFT.apk";
+                                DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFT.apk";
+                                mAddonIsFlashable = false;
                         }
+
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			if (f.exists()) {

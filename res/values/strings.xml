@@ -8,10 +8,10 @@
 
     <string name="google_apps">Google Apps</string>
     <string name="google_apps_summary">Flashable package containing google apps</string>
-    <string name="stock_kb">Stock Gingerbread Keyboard</string>
-    <string name="stock_kb_summary">Install the stock keyboard alongside T3hh4xIME</string>  
     <string name="sbc_1">OMFGBk 1</string>
     <string name="sbc_1_summary">EXPERIMENTAL OMFGB kernel with SBC</string>
+    <string name="omft">OMFT</string>
+    <string name="omft_summary">Theme for OMFGB roms.</string>
 
     <string name="addons_title">T3hh4xx0r Addons</string>
     <string name="addons_summary">Various addons availabe for your flashing needs</string>

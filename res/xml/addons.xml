@@ -3,7 +3,6 @@
     xmlns:addons="http://schemas.android.com/apk/res/com.t3hh4xx0r.addons">
 
 	<PreferenceCategory android:title="@string/packages_addons">
-
 	<com.t3hh4xx0r.addons.IconPreferenceScreen
 			addons:icon="@drawable/google"
 			android:key="google_apps_addon" 
@@ -12,20 +11,21 @@
 	</com.t3hh4xx0r.addons.IconPreferenceScreen>
         </PreferenceCategory>
 
-	<PreferenceCategory android:title="@string/apps_addons">
-
+	<PreferenceCategory android:title="@string/apps_addons"
+        android:key="apps_category">
         <com.t3hh4xx0r.addons.IconPreferenceScreen
-               	        android:key="stock_keyboard" 
-                       	android:title="@string/stock_kb"
-                        android:summary="@string/stock_kb_summary" >
-        </com.t3hh4xx0r.addons.IconPreferenceScreen> 
-	</PreferenceCategory>
+                        addons:icon="@drawable/omft"
+                        android:key="omft" 
+                        android:title="@string/omft"
+                        android:summary="@string/omft_summary" >
+        </com.t3hh4xx0r.addons.IconPreferenceScreen>
+
+        </PreferenceCategory>
 
         <PreferenceCategory 
 	android:title="@string/kernel_addons"
 	android:key="kernel_category"
-	>
-			
+	>			
         <com.t3hh4xx0r.addons.IconPreferenceScreen
                         android:key="sbc_1" 
                         android:title="@string/sbc_1"
