@@ -89,10 +89,10 @@ public class DownloadFile {
 	 	   mNotificationManager = (NotificationManager) context.getSystemService(ns);
 	 	   
 	 	   int icon = R.drawable.icon;        // icon from resources
-    	  CharSequence tickerText = "Hello";              // ticker-text
+    	  CharSequence tickerText = "T3hh4xx0r";              // ticker-text
     	  long when = System.currentTimeMillis();         // notification time
     	  Context tcontext = context.getApplicationContext();      // application Context
-    	  CharSequence contentTitle = "My notification";  // expanded message title
+    	  CharSequence contentTitle = "OMFGB Nightlies";  // expanded message title
     	  CharSequence contentText = "Downloading";      // expanded message text
 
     	  Intent notificationIntent = new Intent(context, Nightlies.class);
