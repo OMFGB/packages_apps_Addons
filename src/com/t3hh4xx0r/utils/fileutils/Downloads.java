@@ -42,8 +42,8 @@ public class Downloads {
 private static String TAG = "Downloads";
 
 private static File extStorageDirectory = Environment.getExternalStorageDirectory();
-    private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
-    public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
+        private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
+        public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
 public static String PREF_LOCATION;
 private static String DOWNLOAD_URL;
