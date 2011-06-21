@@ -27,6 +27,7 @@
 	android:key="kernel_category"
 	>			
         <com.t3hh4xx0r.addons.IconPreferenceScreen
+                        addons:icon="@drawable/kernel"
                         android:key="sbc_1" 
                         android:title="@string/sbc_1"
                         android:summary="@string/sbc_1_summary" >
