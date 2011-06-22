@@ -17,7 +17,6 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-
 		<service android:name="com.t3hh4xx0r.utils.fileutils.DownloadService"></service>
     </application>
 </manifest>

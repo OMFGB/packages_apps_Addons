@@ -16,6 +16,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Build;
@@ -66,7 +67,8 @@ public class Addons extends PreferenceActivity {
 	private static final int FLASH_ADDON = 0;
 	private static final int FLASH_COMPLETE = 1;
 	private static final int INSTALL_ADDON = 2;
-
+	private static final int SOFT_INSTALL_ADDON = 3;
+	
 	private ProgressDialog pbarDialog;
 
 	private Preference mGoogleApps;
@@ -98,7 +100,7 @@ public class Addons extends PreferenceActivity {
 		break;
 		}
 
-		if(this.isSdCardPresent() && this.isSdCardWriteable())updateApp();
+		if(this.isSdCardPresent() && this.isSdCardWriteable());
 		else log("Cannot update app. Sdcard is not writeable or present.");
 	}
 	
@@ -125,15 +127,14 @@ public class Addons extends PreferenceActivity {
                                 OUTPUT_NAME = "OMFT.apk";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFT.apk";
                                 mAddonIsFlashable = false;
-                        }
 
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			if (f.exists()) {
 				if (mAddonIsFlashable) {
                 	        	handler.sendEmptyMessage(FLASH_ADDON);
-				} else {
-					handler.sendEmptyMessage(INSTALL_ADDON);
+				} else {	
+						handler.sendEmptyMessage(SOFT_INSTALL_ADDON);
 				}
                 	} else {
                         	new DownloadFileAsync().execute(DOWNLOAD_URL);
@@ -311,8 +312,8 @@ public class Addons extends PreferenceActivity {
                         if (f.exists()) {
                                 if (mAddonIsFlashable) {
                                         handler.sendEmptyMessage(FLASH_ADDON);
-                                } else {
-                                        handler.sendEmptyMessage(INSTALL_ADDON);
+                                } else {        
+                                                handler.sendEmptyMessage(SOFT_INSTALL_ADDON);
                                 }
 			} else {
 				finish();
@@ -320,27 +321,11 @@ public class Addons extends PreferenceActivity {
 		}
 	}
 
-	public void updateApp() {
-           try {
-                String path ="http://r2doesinc.bitsurge.net/Addons/nightly_version.txt";
-                String targetFileName = "available_version.txt";
-                boolean eof = false;
-                URL u = new URL(path);
-                HttpURLConnection c = (HttpURLConnection) u.openConnection();
-                c.setRequestMethod("GET");
-                c.setDoOutput(true);
-                c.connect();
-                FileOutputStream f = new FileOutputStream(new File(extStorageDirectory + "/t3hh4xx0r/" + targetFileName));
-                InputStream in = c.getInputStream();
-                byte[] buffer = new byte[1024];
-                int len1 = 0;
-                while ( (len1 = in.read(buffer)) > 0 ) {
-                    f.write(buffer,0, len1);
-                }
-                f.close();
-            } catch (IOException e) {
-            e.printStackTrace();
-            }
+	public void softInstallPackage() {
+	
+	Intent intent = new Intent(Intent.ACTION_VIEW);
+	intent.setDataAndType(Uri.fromFile(new File(DOWNLOAD_DIR + OUTPUT_NAME)), "application/vnd.android.package-archive");
+	startActivity(intent);
 	}
 
 	private void log(String msg) {
