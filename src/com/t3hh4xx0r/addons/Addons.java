@@ -128,6 +128,7 @@ public class Addons extends PreferenceActivity {
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFT.apk";
                                 mAddonIsFlashable = false;
 
+			}
 
 			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
 			if (f.exists()) {
