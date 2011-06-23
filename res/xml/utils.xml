@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory android:title="@string/download_utils">
+	</PreferenceCategory>
+
+
+        <PreferenceCategory android:title="@string/flashing_utils">
+        </PreferenceCategory>
+
+</PreferenceScreen>

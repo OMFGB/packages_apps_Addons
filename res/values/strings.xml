@@ -24,4 +24,7 @@
     <string name="addons_label">T3hh4xx0r Addons</string>
     <string name="nightlies_label">T3hh4xx0r Nightlies</string>
 
+    <string name="download_utils">Download Preferences</string>
+    <string name="flashing_utils">Flashing Preferences</string>
+    <string name="utils_label">Preference List</string>
 </resources>
