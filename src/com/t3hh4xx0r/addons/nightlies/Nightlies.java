@@ -295,15 +295,17 @@ public class Nightlies extends ListActivity  {
             final String zipName = o.getZipName();
             	
                             File f = new File (DOWNLOAD_DIR + o.getZipName());
-		            	if(!f.exists() ){
+
+    	            	    if (!f.exists()){
 		            	startService(downloadservice);   
-		            	
-		            }else
-		            {	
-		            	FlashAlertBox("Warning","About to flash package: " + zipName , Installable, zipName);
-	
-		            }			
-  		
+		            } else {
+					if (!DownloadFile.checkFileIsCompleted(o.getURL(), o.getZipName())) {
+					    //TODO: Delete file and first fresh. 
+                                	    startService(downloadservice);
+                                        } else {
+		            		    FlashAlertBox("Warning","About to flash package: " + zipName , Installable, zipName);
+		            		}			
+  			    }
         }
     	
                     
