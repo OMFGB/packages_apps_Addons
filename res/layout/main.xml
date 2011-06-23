@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:padding="10dp"
-    android:textSize="20sp" >
-</TextView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
+    <Button android:text="@string/flash_button"
+	    android:id="@+id/flash_button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_width="fill_parent"
+            android:background="@android:drawable/btn_default_small"
+            android:layout_height="wrap_content" />
+    <Button android:text="@string/download_button"
+	    android:id="@+id/download_button"
+            android:background="@android:drawable/btn_default_small"
+            android:layout_centerInParent="true"
+	    android:layout_above="@id/flash_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    <ListView android:id="@android:id/list"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent" />
+</RelativeLayout>

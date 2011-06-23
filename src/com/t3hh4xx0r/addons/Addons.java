@@ -171,8 +171,10 @@ public class Addons extends PreferenceActivity {
 				installPackage();
 				break;
                         case DOWNLOAD_ADDON:
-                                FileUtils fileUtils = new FileUtils();
-				fileUtils.downloadFile(DOWNLOAD_DIR + OUTPUT_FILE);
+			Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.setClassName("com.t3hh4xx0r.addons", "com.t3hh4xx0r.utils.fileutils.FileUtils");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                                 break;
 			}
 			return;

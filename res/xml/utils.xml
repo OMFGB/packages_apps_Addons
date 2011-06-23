@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <PreferenceCategory android:title="@string/general_utils">
+        <CheckBoxPreference
+	    android:key="skip_prefs"
+	    android:title="@string/skip_prefs_title"
+	    android:summaryOn="@string/summary_on_skip_prefs"
+	    android:summaryOff="@string/summary_off_skip_prefs"
+            />
+        </PreferenceCategory>
+
         <PreferenceCategory android:title="@string/download_utils">
 	</PreferenceCategory>
-
 
         <PreferenceCategory android:title="@string/flashing_utils">
         </PreferenceCategory>

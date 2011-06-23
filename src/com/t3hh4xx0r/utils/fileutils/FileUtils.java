@@ -13,8 +13,11 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
 import android.util.Slog;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.File;
+
+import com.t3hh4xx0r.addons.R;
 
 public class FileUtils extends PreferenceActivity {
         private String TAG = "File Utils";
@@ -26,10 +29,14 @@ public class FileUtils extends PreferenceActivity {
         protected Context mContext = null;
 
         public void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
+
+	    Slog.d(TAG, DOWNLOAD_DIR + " - downloaddir");
+            Slog.d(TAG, OUTPUT_NAME + " - outputname");
+            Slog.d(TAG, DOWNLOAD_URL + " - downloadurl");
+
 
             addPreferencesFromResource(R.xml.utils);
-            PreferenceScreen prefSet = getPreferenceScreen();
+	    setContentView(R.layout.main);
 
             File downloadDir = new File (DOWNLOAD_DIR);
     	        if (!downloadDir.isDirectory()) {
@@ -37,9 +44,9 @@ public class FileUtils extends PreferenceActivity {
         	}
 	}
 
-        public void downloadFile(Context context) {  
+        public void downloadFile() {  
 
-	DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+	DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(DOWNLOAD_URL);  
           
         DownloadManager.Request mRequest =  new  DownloadManager.Request (uri);  

@@ -10,7 +10,7 @@
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
             </activity>
-        <activity android:name=".com.t3hh4xx0r.utils.fileutils.FileUtils" android:label="@string/utils_label" >
+        <activity android:name="com.t3hh4xx0r.utils.fileutils.FileUtils" android:label="@string/utils_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

@@ -27,4 +27,13 @@
     <string name="download_utils">Download Preferences</string>
     <string name="flashing_utils">Flashing Preferences</string>
     <string name="utils_label">Preference List</string>
+    <string name="general_utils">General Preferences</string>
+
+    <string name="summary_off_skip_prefs">This menu will be displayed everytime you download a package.</string>
+    <string name="summary_on_skip_prefs">This menu will be skipped. You can\'t re-enable it at this time.</string>
+    <string name="skip_prefs_title">Skip this menu.</string>
+
+    <string name="download_button">Download</string>
+    <string name="flash_button">Flash</string>
+
 </resources>
