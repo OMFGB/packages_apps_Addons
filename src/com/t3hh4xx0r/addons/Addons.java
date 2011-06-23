@@ -174,6 +174,9 @@ public class Addons extends PreferenceActivity {
 			case INSTALL_ADDON:
 				installPackage();
 				break;
+                        case SOFT_INSTALL_ADDON:
+                                softInstallPackage();
+                                break;
 			}
 			return;
 		}

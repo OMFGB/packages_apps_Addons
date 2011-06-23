@@ -58,7 +58,7 @@ public class Nightlies extends ListActivity  {
     
 
 	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
-	private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
+	private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
 	    
 	private boolean mIsTesting = false;
     	
@@ -294,8 +294,8 @@ public class Nightlies extends ListActivity  {
             final Boolean Installable = !Boolean.parseBoolean(o.getInstallable());
             final String zipName = o.getZipName();
             	
-		            if(!DownloadFile.checkFileIsCompleted(o.getURL(), o.getZipName())){
-		            	
+                            File f = new File (DOWNLOAD_DIR + o.getZipName());
+		            	if(!f.exists() ){
 		            	startService(downloadservice);   
 		            	
 		            }else
