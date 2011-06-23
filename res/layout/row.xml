@@ -8,7 +8,10 @@
         android:orientation="vertical"
         android:layout_width="0dip"
         android:layout_weight="1"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+	android:clickable="true" 
+	android:focusable="true"
+        android:background="@android:drawable/list_selector_background">
         <TextView
             android:id="@+id/nightly_ver"
             android:layout_width="fill_parent"
