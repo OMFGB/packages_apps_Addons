@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 
+
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
@@ -64,27 +65,22 @@ public class Addons extends PreferenceActivity {
 	private static final String SBC1 = "sbc_1";
 	private static final String OMFT = "omft";
 
-        private String DOWNLOAD_DIR;
-        public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
-	public static String PREF_LOCATION;
+        private static final int FLASH_ADDON = 0;
+        private static final int INSTALL_ADDON = 1;
+        private static final int DOWNLOAD_ADDON = 2;
+
+        private String DOWNLOAD_DIR;
+
 	private static String OUTPUT_NAME;
 	private static String DOWNLOAD_URL;
-	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
-
-	private static final int FLASH_ADDON = 0;
-	private static final int FLASH_COMPLETE = 1;
-	private static final int INSTALL_ADDON = 2;
-        private static final int DOWNLOAD_ADDON = 4;
-	
-        private long enqueue;
-        private DownloadManager dm;
 
 	private Preference mGoogleApps;
 	private Preference mSBC1;
 	private Preference mOMFT;
 
 	private boolean mAddonIsFlashable;
+	public static boolean mSkipPrefs = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -162,20 +158,19 @@ public class Addons extends PreferenceActivity {
 		public void handleMessage(Message msg) {
 			switch(msg.what){
 			case FLASH_ADDON:
-				flashPackage();
-				break;
-			case FLASH_COMPLETE:
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 				break;
 			case INSTALL_ADDON:
-				installPackage();
 				break;
                         case DOWNLOAD_ADDON:
-			Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.setClassName("com.t3hh4xx0r.addons", "com.t3hh4xx0r.utils.fileutils.FileUtils");
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                                break;
+			    if (!mSkipPrefs) {
+			    	    Intent intent = new Intent(Intent.ACTION_MAIN);
+                            	    intent.setClassName("com.t3hh4xx0r.addons", "com.t3hh4xx0r.utils.fileutils.FileUtils");
+                        	    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        	    startActivity(intent);
+			    } else {
+				    FileUtils.handler.sendEmptyMessage(DOWNLOAD_ADDON);
+		            }
+			break;
 			}
 			return;
 		}
@@ -226,15 +221,12 @@ public class Addons extends PreferenceActivity {
 				try {
 	                                p = run.exec("su");
 					out = new DataOutputStream(p.getOutputStream());
-					out.writeBytes("busybox echo 'install_zip(\"" + DOWNLOAD_DIR + OUTPUT_NAME +"\");' > " + EXTENDEDCMD + "\n");
                                         out.writeBytes("reboot recovery\n");
 					out.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 					return;
 				}
-
-				handler.sendEmptyMessage(FLASH_COMPLETE);		
 			}
 		};
 		cmdThread.start();

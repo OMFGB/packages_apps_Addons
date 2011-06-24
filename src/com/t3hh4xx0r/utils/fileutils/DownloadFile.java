@@ -33,10 +33,10 @@ public class DownloadFile {
 
 
 	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
-    private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
-    private String OUTPUT_NAME;
-    NotificationManager mNotificationManager;
-    private boolean IsBeingNotified = false;
+        private static final String DOWNLOAD_DIR = extStorageDirectory + "/t3hh4xx0r/downloads/";
+        private String OUTPUT_NAME;
+        NotificationManager mNotificationManager;
+        private boolean IsBeingNotified = false;
 	private boolean mAddonIsFlashable = true;
 	String FULL_PATH_TO_FLASHABLE;
 	private static boolean mIsCompleted = false;
