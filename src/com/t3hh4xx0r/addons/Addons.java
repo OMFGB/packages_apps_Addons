@@ -13,9 +13,15 @@ import java.net.URLConnection;
 import java.net.HttpURLConnection;
 
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Query;
+import android.app.DownloadManager.Request;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -54,22 +60,19 @@ public class Addons extends PreferenceActivity {
         private static final String GOOGLE_APPS = "google_apps_addon";
 	private static final String SBC1 = "sbc_1";
 	private static final String OMFT = "omft";
-
-        private static final String DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
-	public static String PREF_LOCATION;
+        private static String DOWNLOAD_DIR;
 	private static String OUTPUT_NAME;
 	private static String DOWNLOAD_URL;
-	private static File extStorageDirectory = Environment.getExternalStorageDirectory();
 
-	private int DOWNLOAD_PROGRESS = 0;
-	private static final int FLASH_ADDON = 0;
-	private static final int FLASH_COMPLETE = 1;
+	private static final int DOWNLOAD_ADDON = 0;
+	private static final int FLASH_ADDON = 1;
 	private static final int INSTALL_ADDON = 2;
-	private static final int SOFT_INSTALL_ADDON = 3;
 	
-	private ProgressDialog pbarDialog;
+        private long enqueue;
+
+        private DownloadManager dm;
 
 	private Preference mGoogleApps;
 	private Preference mSBC1;
@@ -99,11 +102,16 @@ public class Addons extends PreferenceActivity {
                         appsCategory.removePreference(mOMFT);
 		break;
 		}
+		
+		BroadcastReceiver onComplete=new BroadcastReceiver() {
+        	    public void onReceive(Context context, Intent intent) {
+			checkFileStatus();
+	            }
+    		};
 
-		if(this.isSdCardPresent() && this.isSdCardWriteable());
-		else log("Cannot update app. Sdcard is not writeable or present.");
+		registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 	}
-	
+		
 	private boolean isSdCardPresent(){
 		return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
 	}
@@ -130,34 +138,15 @@ public class Addons extends PreferenceActivity {
 
 			}
 
-			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
-			if (f.exists()) {
-				if (mAddonIsFlashable) {
-                	        	handler.sendEmptyMessage(FLASH_ADDON);
-				} else {	
-						handler.sendEmptyMessage(SOFT_INSTALL_ADDON);
-				}
-                	} else {
-                        	new DownloadFileAsync().execute(DOWNLOAD_URL);
-                	}
+			if (mAddonIsFlashable) {
+                                        DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
+			} else {
+                                        DOWNLOAD_DIR = "/mnt/sdcard/t3hh4xx0r/downloads/";
+			}
+			
+			checkFileStatus();
      		}
-     		else{
-     			log("Cannot update app. Sdcard is not writeable or present.");
-     		}	
 			return true;
-	}
-
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		if (id == DOWNLOAD_PROGRESS) {
-			pbarDialog = new ProgressDialog(this);
-			pbarDialog.setMessage("Downloading ...");
-			pbarDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			pbarDialog.setCancelable(false);
-			pbarDialog.show();
-			return pbarDialog;
-		}
-		return null;
 	}
 
 	private Handler handler = new Handler() {
@@ -167,63 +156,18 @@ public class Addons extends PreferenceActivity {
 			case FLASH_ADDON:
 				flashPackage();
 				break;
-			case FLASH_COMPLETE:
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-				pbarDialog.dismiss();
-				break;
 			case INSTALL_ADDON:
 				installPackage();
 				break;
-                        case SOFT_INSTALL_ADDON:
-                                softInstallPackage();
+                        case DOWNLOAD_ADDON:
+                                downloadPackage();
                                 break;
 			}
 			return;
 		}
 	};
 
-	public void installPackage() {
-
-                pbarDialog = new ProgressDialog(Addons.this);
-                pbarDialog.setMessage("Please Wait\n\nInstalling Addon...");
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-                pbarDialog.show();
-
-                Thread cmdThread = new Thread(){
-                        @Override
-                        public void run() {
-                                Looper.prepare();
-
-                                try{Thread.sleep(1000);}catch(InterruptedException e){ }
-
-                                final Runtime run = Runtime.getRuntime();
-                                DataOutputStream out = null;
-                                Process p = null;
-
-                                try {
-                                        p = run.exec("su");
-                                        out = new DataOutputStream(p.getOutputStream());
-					out.writeBytes("busybox mount -o rw,remount /system\n");
-                                        out.writeBytes("busybox cp " + DOWNLOAD_DIR + OUTPUT_NAME + " /system/app/\n");
-                                        out.writeBytes("busybox mount -o ro,remount /system\n");
-                                        out.flush();
-                                } catch (IOException e) {
-                                        e.printStackTrace();
-                                        return;
-                                }
-
-                                handler.sendEmptyMessage(FLASH_COMPLETE);
-                        }
-                };
-                cmdThread.start();
-        }
-
 	public void flashPackage() {
-
-		pbarDialog = new ProgressDialog(Addons.this);
-		pbarDialog.setMessage("Please Wait\n\nPreparing Addon for flashing...");
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-		pbarDialog.show();
 
 		Thread cmdThread = new Thread(){
 			@Override
@@ -251,85 +195,57 @@ public class Addons extends PreferenceActivity {
 					e.printStackTrace();
 					return;
 				}
-
-				handler.sendEmptyMessage(FLASH_COMPLETE);		
 			}
 		};
 		cmdThread.start();
 	}
 
-	class DownloadFileAsync extends AsyncTask<String, String, String> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialog(DOWNLOAD_PROGRESS);
-		}
-
-		@Override
-		protected String doInBackground(String... aurl) {
-			int count;
-
-			File downloadDir = new File (DOWNLOAD_DIR);
-			if (!downloadDir.isDirectory()) {
-				downloadDir.mkdir();
-			}
-
-			try {
-				URL url = new URL(aurl[0]);
-				URLConnection conexion = url.openConnection();
-				conexion.connect();
-
-				int lenghtOfFile = conexion.getContentLength();
-
-				InputStream input = new BufferedInputStream(url.openStream());
-				OutputStream output = new FileOutputStream(downloadDir + "/" + OUTPUT_NAME);
-
-				byte data[] = new byte[1024];
-
-				long total = 0;
-
-				while ((count = input.read(data)) != -1) {
-					total += count;
-					publishProgress(""+(int)((total*100)/lenghtOfFile));
-					output.write(data, 0, count);
-				}
-
-				output.flush();
-				output.close();
-				input.close();
-			} catch (Exception e) {}
-			return null;
-
-		}
-
-		@Override
-		protected void onProgressUpdate(String... progress) {
-			pbarDialog.setProgress(Integer.parseInt(progress[0]));
-		}
-
-		@Override
-		protected void onPostExecute(String unused) {
-			removeDialog(DOWNLOAD_PROGRESS);
-
-			File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
-                        if (f.exists()) {
-                                if (mAddonIsFlashable) {
-                                        handler.sendEmptyMessage(FLASH_ADDON);
-                                } else {        
-                                                handler.sendEmptyMessage(SOFT_INSTALL_ADDON);
-                                }
-			} else {
-				finish();
-			}
-		}
-	}
-
-	public void softInstallPackage() {
+	public void installPackage() {
 	
 	Intent intent = new Intent(Intent.ACTION_VIEW);
 	intent.setDataAndType(Uri.fromFile(new File(DOWNLOAD_DIR + OUTPUT_NAME)), "application/vnd.android.package-archive");
 	startActivity(intent);
+	}
+
+	public void downloadPackage() {
+
+	Slog.d(TAG, "Download for " + OUTPUT_NAME + " started.");
+
+	File downloadDir = new File (DOWNLOAD_DIR);
+	if (!downloadDir.isDirectory()) {
+	    downloadDir.mkdir();
+	}
+
+        DownloadManager mDownloadManager = (DownloadManager) getSystemService (Context.DOWNLOAD_SERVICE);  
+
+        Uri uri = Uri.parse(DOWNLOAD_URL);  
+          
+        DownloadManager.Request mRequest =  new  DownloadManager.Request (uri);  
+        mRequest.setTitle ("T3hh4xx0r Addons");  
+        mRequest.setDescription ("Downloading " + OUTPUT_NAME);  
+
+	File file = new File(DOWNLOAD_DIR + OUTPUT_NAME);  
+	mRequest.setDestinationUri(Uri.fromFile(file));
+
+        mRequest.setShowRunningNotification(true);  
+        mRequest.setVisibleInDownloadsUi(true);  
+          
+        long downloadId = mDownloadManager.enqueue(mRequest);
+	}
+
+	public void checkFileStatus() {
+	File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
+    	    if (f.exists()) {
+		    Slog.d(TAG, "File is found");
+	    	    if (mAddonIsFlashable) {
+		        handler.sendEmptyMessage(FLASH_ADDON);   
+                    } else {
+  	            handler.sendEmptyMessage(INSTALL_ADDON);
+                    }
+  	    } else {
+		   Slog.d(TAG, "File not found, starting DL.");
+		    handler.sendEmptyMessage(DOWNLOAD_ADDON);
+	    }
 	}
 
 	private void log(String msg) {

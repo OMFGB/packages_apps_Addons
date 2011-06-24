@@ -9,14 +9,22 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
-            </activity>
-  
-        
+            </activity>  
         <activity android:name=".Addons" android:label="@string/addons_label" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-		<service android:name="com.t3hh4xx0r.utils.fileutils.DownloadService"></service>
+		<service android:name="com.t3hh4xx0r.utils.fileutils.DownloadService"/>
+        <receiver 
+        android:name=".DownloadReceiver"
+        android:permission="android.permission.SEND_DOWNLOAD_COMPLETED_INTENTS"
+        android:exported="true">
+         <intent-filter>
+            <action
+                android:name="android.intent.action.DOWNLOAD_COMPLETED">
+            </action>
+         </intent-filter>
+     </receiver>
     </application>
 </manifest>
