@@ -12,13 +12,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.HttpURLConnection;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.IntentFilter;
@@ -62,7 +63,9 @@ public class Addons extends PreferenceActivity {
 	private static final String OMFT = "omft";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
-        private static String DOWNLOAD_DIR;
+	public static String CWM_DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
+	public static String DOWNLOAD_DIR = "/mnt/sdcard/t3hh4xx0r/downloads/";
+
 	private static String OUTPUT_NAME;
 	private static String DOWNLOAD_URL;
 
@@ -138,12 +141,6 @@ public class Addons extends PreferenceActivity {
 
 			}
 
-			if (mAddonIsFlashable) {
-                                        DOWNLOAD_DIR = "/sdcard/t3hh4xx0r/downloads/";
-			} else {
-                                        DOWNLOAD_DIR = "/mnt/sdcard/t3hh4xx0r/downloads/";
-			}
-			
 			checkFileStatus();
      		}
 			return true;
@@ -188,7 +185,7 @@ public class Addons extends PreferenceActivity {
 				try {
 	                                p = run.exec("su");
 					out = new DataOutputStream(p.getOutputStream());
-					out.writeBytes("busybox echo 'install_zip(\"" + DOWNLOAD_DIR + OUTPUT_NAME +"\");' > " + EXTENDEDCMD + "\n");
+					out.writeBytes("busybox echo 'install_zip(\"" + CWM_DOWNLOAD_DIR + OUTPUT_NAME +"\");' > " + EXTENDEDCMD + "\n");
                                         out.writeBytes("reboot recovery\n");
 					out.flush();
 				} catch (IOException e) {
@@ -216,13 +213,13 @@ public class Addons extends PreferenceActivity {
 	    downloadDir.mkdir();
 	}
 
-        DownloadManager mDownloadManager = (DownloadManager) getSystemService (Context.DOWNLOAD_SERVICE);  
+        DownloadManager mDownloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);  
 
         Uri uri = Uri.parse(DOWNLOAD_URL);  
           
         DownloadManager.Request mRequest =  new  DownloadManager.Request (uri);  
         mRequest.setTitle ("T3hh4xx0r Addons");  
-        mRequest.setDescription ("Downloading " + OUTPUT_NAME);  
+        mRequest.setDescription (OUTPUT_NAME);  
 
 	File file = new File(DOWNLOAD_DIR + OUTPUT_NAME);  
 	mRequest.setDestinationUri(Uri.fromFile(file));
@@ -238,9 +235,9 @@ public class Addons extends PreferenceActivity {
     	    if (f.exists()) {
 		    Slog.d(TAG, "File is found");
 	    	    if (mAddonIsFlashable) {
-		        handler.sendEmptyMessage(FLASH_ADDON);   
-                    } else {
-  	            handler.sendEmptyMessage(INSTALL_ADDON);
+			flashAlertBox();
+                   } else {
+   	            handler.sendEmptyMessage(INSTALL_ADDON);
                     }
   	    } else {
 		   Slog.d(TAG, "File not found, starting DL.");
@@ -251,4 +248,18 @@ public class Addons extends PreferenceActivity {
 	private void log(String msg) {
 	    Log.d(TAG, msg);
   	}
+	
+	public void flashAlertBox() {
+	AlertDialog dialog = new AlertDialog.Builder(Addons.this).create();
+	   dialog.setTitle("T3hh4xx0r Addons");
+           dialog.setMessage("About to flash " + OUTPUT_NAME + "!");
+	   dialog.setCancelable(false);
+
+	   dialog.setButton("Ok", new DialogInterface.OnClickListener() {
+        	public void onClick(DialogInterface dialog, int whichButton) {
+ 		    handler.sendEmptyMessage(FLASH_ADDON);
+    		}
+	   });
+ 	dialog.show();
+	}
 }
