@@ -60,6 +60,9 @@ public class Addons extends PreferenceActivity {
 	//Constants for addons, ties to android:key value in addons.xml
         private static final String GOOGLE_APPS = "google_apps_addon";
 	private static final String SBC1 = "sbc_1";
+	private static final String OMFGBMECHACFS = "omfgbmechacfs";
+	private static final String OMFGBMECHABFS = "omfgbmechabfs";
+	private static final String OMFGBMECHAKANGBANG = "omfgbmechakangbang";
 	private static final String OMFT = "omft";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
@@ -79,6 +82,9 @@ public class Addons extends PreferenceActivity {
 
 	private Preference mGoogleApps;
 	private Preference mSBC1;
+	private Preference mOMFGBmechaKernelCfs;
+	private Preference mOMFGBmechaKernelBfs;
+	private Preference mOMFGBmechaKernelKangBang;
 	private Preference mOMFT;
 
 	private boolean mAddonIsFlashable;
@@ -96,6 +102,21 @@ public class Addons extends PreferenceActivity {
 	        if ((!Build.MODEL.equals("Incredible"))) {
 			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
 		        kernelCategory.removePreference(mSBC1);
+		}
+		mOMFGBmechaKernelCfs = prefSet.findPreference(OMFGBMECHACFS);
+		if ((!Build.MODEL.equals("Thunderbolt"))) {
+			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
+			kernelCategory.removePreference(mOMFGBmechaKernelCfs);
+		}
+		mOMFGBmechaKernelBfs = prefSet.findPreference(OMFGBMECHABFS);
+		if ((!Build.MODEL.equals("Thunderbolt"))) {
+			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
+			kernelCategory.removePreference(mOMFGBmechaKernelBfs);
+		}
+		mOMFGBmechaKernelKangBang = prefSet.findPreference(OMFGBMECHAKANGBANG);
+		if ((!Build.MODEL.equals("Thunderbolt"))) {
+			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
+			kernelCategory.removePreference(mOMFGBmechaKernelKangBang);
 		}
 
                 mOMFT = prefSet.findPreference(OMFT);
@@ -134,6 +155,18 @@ public class Addons extends PreferenceActivity {
                                 OUTPUT_NAME = "OMFGBk-sbc_1.zip";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGBk-sbc-1.zip";
                                 mAddonIsFlashable = true;
+			} else if (preference == mOMFGBmechaKernelCfs) {
+				OUTPUT_NAME = "OMFGB-Drod_Cfs.zip";
+				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_Cfs.zip";
+				mAddonIsFlashable = true;
+			} else if (preference == mOMFGBmechaKernelBfs) {
+				OUTPUT_NAME = "OMFGB-Drod_Bfs.zip";
+				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_Bfs.zip";
+				mAddonIsFlashable = true;
+			} else if (preference == mOMFGBmechaKernelKangBang) {
+				OUTPUT_NAME = "OMFGB-Drod_KangBang.zip";
+				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_KangBang.zip";
+				mAddonIsFlashable = true;
                         } else if (preference == mOMFT) {
                                 OUTPUT_NAME = "OMFT.apk";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFT.apk";

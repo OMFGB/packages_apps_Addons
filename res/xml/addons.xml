@@ -32,6 +32,24 @@
                         android:title="@string/sbc_1"
                         android:summary="@string/sbc_1_summary" >
         </com.t3hh4xx0r.addons.IconPreferenceScreen>
+	<com.t3hh4xx0r.addons.IconPreferenceScreen
+			addons:icon="@drawable/kernel"
+			android:key="omfgbmechabfs"
+			android:title="@string/omfgbmechabfs"
+			android:summary="@string/omfgbmechabfs_summary" >
+	</com.t3hh4xx0r.addons.IconPreferenceScreen>
+	<com.t3hh4xx0r.addons.IconPreferenceScreen
+			addons:icon="@drawable/kernel"
+			android:key="omfgbmechacfs"
+			android:title="@string/omfgbmechacfs"
+			android:summary="@string/omfgbmechacfs_summary" >
+	</com.t3hh4xx0r.addons.IconPreferenceScreen>
+	<com.t3hh4xx0r.addons.IconPreferenceScreen
+			addons:icon="@drawable/kernel"
+			android:key="omfgbmechakangbang"
+			android:title="@string/omfgbmechakangbang"
+			android:summary="@string/omfgbmechakang_summary" >
+	</com.t3hh4xx0r.addons.IconPreferenceScreen>
         </PreferenceCategory>
 
 </PreferenceScreen>

@@ -10,6 +10,12 @@
     <string name="google_apps_summary">Flashable package containing google apps</string>
     <string name="sbc_1">OMFGBk 1</string>
     <string name="sbc_1_summary">EXPERIMENTAL OMFGB kernel with SBC</string>
+    <string name="omfgbmechabfs">OMFGB-Drod-BFS-StockClock</string>
+    <string name="omfgbmechabfs_summary">Custom stock clock/voltage with BFS, (stock kernel)</string>
+    <string name="omfgbmechacfs">OMFGB-Drod-CFS-StockClock</string>
+    <string name="omfgbmechacfs_summary">Custom stock clock/voltage with CFS</string>
+    <string name="omfgbmechakangbang">KangBang-Drod-BFS-OC/UV</string>
+    <string name="omfgbmechakang_summary">Drod2169s KangBang BFS/OC/UV kernel</string>
     <string name="omft">OMFT</string>
     <string name="omft_summary">Theme for OMFGB roms.</string>
 
