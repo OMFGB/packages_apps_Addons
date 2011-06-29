@@ -63,6 +63,7 @@ public class Addons extends PreferenceActivity {
 	private static final String OMFGBMECHACFS = "omfgbmechacfs";
 	private static final String OMFGBMECHABFS = "omfgbmechabfs";
 	private static final String OMFGBMECHAKANGBANG = "omfgbmechakangbang";
+	private static final String LEAN = "lean";
 	private static final String OMFT = "omft";
         public static final String EXTENDEDCMD = "/cache/recovery/extendedcommand";
 
@@ -85,6 +86,7 @@ public class Addons extends PreferenceActivity {
 	private Preference mOMFGBmechaKernelCfs;
 	private Preference mOMFGBmechaKernelBfs;
 	private Preference mOMFGBmechaKernelKangBang;
+	private Preference mLean;
 	private Preference mOMFT;
 
 	private boolean mAddonIsFlashable;
@@ -117,6 +119,11 @@ public class Addons extends PreferenceActivity {
 		if ((!Build.MODEL.equals("Thunderbolt"))) {
 			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
 			kernelCategory.removePreference(mOMFGBmechaKernelKangBang);
+		}
+		mLean = prefSet.findPreference(LEAN);
+		if ((!Build.MODEL.equals("Thunderbolt"))) {
+			PreferenceCategory kernelCategory = (PreferenceCategory) findPreference("kernel_category");
+			kernelCategory.removePreference(mLean);
 		}
 
                 mOMFT = prefSet.findPreference(OMFT);
@@ -166,6 +173,10 @@ public class Addons extends PreferenceActivity {
 			} else if (preference == mOMFGBmechaKernelKangBang) {
 				OUTPUT_NAME = "OMFGB-Drod_KangBang.zip";
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_KangBang.zip";
+				mAddonIsFlashable = true;
+			} else if (preference == mLean) {
+				OUTPUT_NAME = "imoseyon_leanKernel_v3.1.6CM7.zip";
+				DOWNLOAD_URL = "http://www.androiddoes.net/~imoseyon/imoseyon_leanKernel_v3.1.6CM7.zip";
 				mAddonIsFlashable = true;
                         } else if (preference == mOMFT) {
                                 OUTPUT_NAME = "OMFT.apk";

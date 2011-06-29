@@ -16,6 +16,8 @@
     <string name="omfgbmechacfs_summary">Custom stock clock/voltage with CFS</string>
     <string name="omfgbmechakangbang">KangBang-Drod-BFS-OC/UV</string>
     <string name="omfgbmechakang_summary">Drod2169s KangBang BFS/OC/UV kernel</string>
+    <string name="lean_title">leanKernel v3.1.6</string>
+    <string name="lean_summary">Imoseyons leanKernel for AOSP</string>
     <string name="omft">OMFT</string>
     <string name="omft_summary">Theme for OMFGB roms.</string>
 

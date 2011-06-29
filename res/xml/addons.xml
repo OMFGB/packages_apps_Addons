@@ -50,6 +50,12 @@
 			android:title="@string/omfgbmechakangbang"
 			android:summary="@string/omfgbmechakang_summary" >
 	</com.t3hh4xx0r.addons.IconPreferenceScreen>
+	<com.t3hh4xx0r.addons.IconPreferenceScreen
+			addons:icon="@drawable/kernel"
+			android:key="lean"
+			android:title="@string/lean_title"
+			android:summary="@string/lean_summary" >
+	</com.t3hh4xx0r.addons.IconPreferenceScreen>
         </PreferenceCategory>
 
 </PreferenceScreen>
