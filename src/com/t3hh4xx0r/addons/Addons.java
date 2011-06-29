@@ -218,6 +218,8 @@ public class Addons extends PreferenceActivity {
 				try {
 	                                p = run.exec("su");
 					out = new DataOutputStream(p.getOutputStream());
+					out.writeBytes("busybox echo 'rm -r /data/dalvik-cache' > " + EXTENDEDCMD + "\n");
+                                        out.writeBytes("busybox echo 'rm -r /cache/dalvik-cache' > " + EXTENDEDCMD + "\n");
 					out.writeBytes("busybox echo 'install_zip(\"" + CWM_DOWNLOAD_DIR + OUTPUT_NAME +"\");' > " + EXTENDEDCMD + "\n");
                                         out.writeBytes("reboot recovery\n");
 					out.flush();
