@@ -269,10 +269,10 @@ public class Addons extends PreferenceActivity {
 	File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
     	    if (f.exists()) {
 		    Slog.d(TAG, "File is found");
-	    	    if (mAddonIsFlashable) {
-			flashAlertBox();
+	    	    if (!mAddonIsFlashable) {
+                          handler.sendEmptyMessage(INSTALL_ADDON);
                    } else {
-   	            handler.sendEmptyMessage(INSTALL_ADDON);
+                          flashAlertBox();
                     }
   	    } else {
 		   Slog.d(TAG, "File not found, starting DL.");
