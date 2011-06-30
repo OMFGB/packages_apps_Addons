@@ -16,6 +16,9 @@ import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -89,7 +92,9 @@ public class Addons extends PreferenceActivity {
 	private Preference mLean;
 	private Preference mOMFT;
 
-	private boolean mAddonIsFlashable;
+        NotificationManager mNotificationManager;
+
+	private boolean mIsFlashable = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -136,6 +141,22 @@ public class Addons extends PreferenceActivity {
 		
 		BroadcastReceiver onComplete=new BroadcastReceiver() {
         	    public void onReceive(Context context, Intent intent) {
+
+                String ns = Context.NOTIFICATION_SERVICE;
+                mNotificationManager = (NotificationManager) context.getSystemService(ns);
+                int icon = R.drawable.icon;
+                CharSequence tickerText = "Download Finished";
+                long when = System.currentTimeMillis();
+                Context tcontext = context.getApplicationContext();
+                CharSequence contentTitle = "T3hh4xx0r Addons";
+                CharSequence contentText = OUTPUT_NAME + " finished downloading";
+
+                Intent notificationIntent = new Intent(context, Addons.class);
+                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
+                final Notification notification = new Notification(icon, tickerText, when);
+                notification.setLatestEventInfo(tcontext, contentTitle, contentText, contentIntent);
+	                mNotificationManager.notify(1, notification);
 			checkFileStatus();
 	            }
     		};
@@ -157,31 +178,31 @@ public class Addons extends PreferenceActivity {
 		        if (preference == mGoogleApps) {
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/GAPPS.zip";
 				OUTPUT_NAME = "Gapps.zip";
-				mAddonIsFlashable = true;
+				mIsFlashable = true;
 			} else if (preference == mSBC1) {
                                 OUTPUT_NAME = "OMFGBk-sbc_1.zip";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGBk-sbc-1.zip";
-                                mAddonIsFlashable = true;
+                                mIsFlashable = true;
 			} else if (preference == mOMFGBmechaKernelCfs) {
 				OUTPUT_NAME = "OMFGB-Drod_Cfs.zip";
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_Cfs.zip";
-				mAddonIsFlashable = true;
+				mIsFlashable = true;
 			} else if (preference == mOMFGBmechaKernelBfs) {
 				OUTPUT_NAME = "OMFGB-Drod_Bfs.zip";
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_Bfs.zip";
-				mAddonIsFlashable = true;
+				mIsFlashable = true;
 			} else if (preference == mOMFGBmechaKernelKangBang) {
 				OUTPUT_NAME = "OMFGB-Drod_KangBang.zip";
 				DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFGB-Drod_KangBang.zip";
-				mAddonIsFlashable = true;
+				mIsFlashable = true;
 			} else if (preference == mLean) {
 				OUTPUT_NAME = "imoseyon_leanKernel_v3.1.6CM7.zip";
 				DOWNLOAD_URL = "http://www.androiddoes.net/~imoseyon/imoseyon_leanKernel_v3.1.6CM7.zip";
-				mAddonIsFlashable = true;
+				mIsFlashable = true;
                         } else if (preference == mOMFT) {
                                 OUTPUT_NAME = "OMFT.apk";
                                 DOWNLOAD_URL = "http://r2doesinc.bitsurge.net/Addons/OMFT.apk";
-                                mAddonIsFlashable = false;
+                                mIsFlashable = false;
 
 			}
 
@@ -209,7 +230,6 @@ public class Addons extends PreferenceActivity {
 	};
 
 	public void flashPackage() {
-
 		Thread cmdThread = new Thread(){
 			@Override
 			public void run() {
@@ -244,7 +264,6 @@ public class Addons extends PreferenceActivity {
 	}
 
 	public void installPackage() {
-	
 	Intent intent = new Intent(Intent.ACTION_VIEW);
 	intent.setDataAndType(Uri.fromFile(new File(DOWNLOAD_DIR + OUTPUT_NAME)), "application/vnd.android.package-archive");
 	startActivity(intent);
@@ -280,11 +299,7 @@ public class Addons extends PreferenceActivity {
 	File f = new File (DOWNLOAD_DIR + OUTPUT_NAME);
     	    if (f.exists()) {
 		    Slog.d(TAG, "File is found");
-	    	    if (!mAddonIsFlashable) {
-                          handler.sendEmptyMessage(INSTALL_ADDON);
-                   } else {
                           flashAlertBox();
-                    }
   	    } else {
 		   Slog.d(TAG, "File not found, starting DL.");
 		    handler.sendEmptyMessage(DOWNLOAD_ADDON);
@@ -298,14 +313,22 @@ public class Addons extends PreferenceActivity {
 	public void flashAlertBox() {
 	AlertDialog dialog = new AlertDialog.Builder(Addons.this).create();
 	   dialog.setTitle("T3hh4xx0r Addons");
-           dialog.setMessage("About to flash " + OUTPUT_NAME + "!");
-	   dialog.setCancelable(false);
-
-	   dialog.setButton("Ok", new DialogInterface.OnClickListener() {
-        	public void onClick(DialogInterface dialog, int whichButton) {
- 		    handler.sendEmptyMessage(FLASH_ADDON);
-    		}
-	   });
+	   dialog.setCancelable(true);
+	   if (mIsFlashable) {
+	           dialog.setMessage("About to flash " + OUTPUT_NAME + "!");
+		   dialog.setButton("Ok", new DialogInterface.OnClickListener() {
+        	    public void onClick(DialogInterface dialog, int whichButton) {
+ 		    	handler.sendEmptyMessage(FLASH_ADDON);
+    			}
+	            });
+	   } else {
+                   dialog.setMessage("About to install " + OUTPUT_NAME + "!");
+                   dialog.setButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        handler.sendEmptyMessage(INSTALL_ADDON);
+                        }
+                    });
+           }
  	dialog.show();
 	}
 }
