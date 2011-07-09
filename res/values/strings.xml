@@ -31,5 +31,7 @@
 
     <string name="addons_label">T3hh4xx0r Addons</string>
     <string name="nightlies_label">T3hh4xx0r Nightlies</string>
+    
+    <string name="refresh" >Refresh</string>
 
 </resources>

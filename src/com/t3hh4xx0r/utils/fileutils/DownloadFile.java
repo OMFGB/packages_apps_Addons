@@ -1,6 +1,10 @@
 package com.t3hh4xx0r.utils.fileutils;
 
+
+import com.t3hh4xx0r.addons.R;
+
 import java.io.BufferedInputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,8 +27,6 @@ import android.os.Environment;
 import android.util.Log;
 
 
-import com.t3hh4xx0r.addons.R;
-import com.t3hh4xx0r.addons.nightlies.Nightlies;
 
 public class DownloadFile {
 	public int mPercentage;
@@ -95,7 +97,8 @@ public class DownloadFile {
     	  CharSequence contentTitle = "OMFGB Nightlies";  // expanded message title
     	  CharSequence contentText = "Downloading";      // expanded message text
 
-    	  Intent notificationIntent = new Intent(context, Nightlies.class);
+    	  //Intent notificationIntent = new Intent(context, Nightlies.class);
+    	  Intent notificationIntent = new Intent();
     	  PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
     	  // the next two lines initialize the Notification, using the configurations above
@@ -231,7 +234,7 @@ public class DownloadFile {
 	    	  CharSequence contentTitle = "OMFGB Nightlies";  // expanded message title
 	    	  CharSequence contentText = "Download finished";      // expanded message text
 
-	    	  Intent notificationIntent = new Intent(context, Nightlies.class);
+	    	  Intent notificationIntent = new Intent();
 	    	  PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
 	    	  // the next two lines initialize the Notification, using the configurations above
@@ -254,7 +257,7 @@ public class DownloadFile {
 	public static String updateAppManifest(String device) {
 			
 		  String targetFileName = device;
-		  String path ="https://raw.github.com/OMFGB/OMFGBManifests/master/" + targetFileName;
+		  String path ="https://raw.github.com/OMFGB/OMFGBManifests/updater/" + targetFileName;
     
 	      File downloadDir = new File (DOWNLOAD_DIR);
 			if (!downloadDir.isDirectory()) {
