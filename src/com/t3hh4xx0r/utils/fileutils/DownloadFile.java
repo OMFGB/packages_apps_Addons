@@ -257,7 +257,7 @@ public class DownloadFile {
 	public static String updateAppManifest(String device) {
 			
 		  String targetFileName = device;
-		  String path ="https://raw.github.com/OMFGB/OMFGBManifests/updater/" + targetFileName;
+		  String path ="https://raw.github.com/OMFGB/OMFGBManifests/master/" + targetFileName;
     
 	      File downloadDir = new File (DOWNLOAD_DIR);
 			if (!downloadDir.isDirectory()) {
